@@ -6,7 +6,7 @@ import { entryFromDraw, mergeHistory, parsePairsText, extractTokens, entriesFrom
 import { encryptPayload, decryptPayload } from '../js/core/crypto.js';
 import { performDraw, createDrawCode, CODE_LENGTH } from '../js/core/draw.js';
 import { countAssignments, exactAnalysis } from '../js/core/matching.js';
-import { eventToPayload, eventFromPayload, sanitizeEvent, isEventEmpty } from '../js/core/event.js';
+import { eventToPayload, eventFromPayload, sanitizeEvent, isEventEmpty, formatBudget, parseBudget, cleanAmount } from '../js/core/event.js';
 import { parseImport, previewImport } from '../js/core/importer.js';
 import { exportConfig, applyImport } from '../js/core/config.js';
 import { createRules } from '../js/core/rules.js';
@@ -136,4 +136,15 @@ test('compute tasks run the same logic used by the worker', () => {
   assert.equal(runComputeTask('analyze', { allowed }).total, 9);
   assert.equal(runComputeTask('draw', { participants: ps, rules: rulesWith(ps) }).assignments.length, 4);
   assert.throws(() => runComputeTask('nope', {}), /Unknown task/);
+});
+
+test('budget is a number plus a currency symbol, nothing else', () => {
+  assert.equal(cleanAmount('3a0,5€ x'), '30,5');
+  assert.equal(formatBudget('30', '€'), '30 €');
+  assert.equal(formatBudget('25', '£'), '£25');
+  assert.equal(formatBudget('abc', '€'), '');
+  assert.deepEqual(parseBudget('máx. 30€'), { amount: '30', currency: '€' });
+  assert.deepEqual(parseBudget('$20.50'), { amount: '20.50', currency: '$' });
+  assert.equal(sanitizeEvent({ budget: 'unos 40 euros' }).budget, '40 €');
+  assert.equal(sanitizeEvent({ budget: 'sin límite' }).budget, '');
 });

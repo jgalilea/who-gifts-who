@@ -6,7 +6,7 @@ import { buildAllowed, configSignature } from './core/rules.js';
 import { checkFeasibility } from './core/feasibility.js';
 import { applyTranslations, detectLanguage, setLanguage, getLanguage } from './i18n/index.js';
 import { STORAGE_KEYS, loadString, saveString } from './storage.js';
-import { $$ } from './ui/dom.js';
+import { $$, disableAutofill } from './ui/dom.js';
 import { createEventView } from './ui/event-view.js';
 import { createParticipantsView } from './ui/participants-view.js';
 import { createImportView } from './ui/import-view.js';
@@ -26,6 +26,7 @@ function derive({ participants, rules }) {
 
 function init() {
   setLanguage(detectLanguage(loadString(STORAGE_KEYS.lang)));
+  disableAutofill();
   const store = createAppState();
   const sections = initSections();
 

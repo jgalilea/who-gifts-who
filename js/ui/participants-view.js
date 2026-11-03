@@ -35,6 +35,10 @@ export function createParticipantsView({ store, openImport }) {
       nameInput.focus();
     }
   });
+  groupInput.addEventListener('input', () => {
+    const value = groupInput.value.trim().toLocaleLowerCase();
+    for (const chip of $('#group-chips').children) chip.setAttribute('aria-pressed', String(chip.textContent.toLocaleLowerCase() === value));
+  });
   for (const input of Object.values(addFields)) {
     input.addEventListener('input', () => {
       addError.textContent = '';
@@ -60,6 +64,29 @@ export function createParticipantsView({ store, openImport }) {
     });
     if (ok) actions.clearAll();
   });
+
+  /** Existing family groups as one-tap buttons (a selector without browser suggestions). */
+  function groupChips(groups, input) {
+    return groups.map((g) =>
+      h('button', {
+        type: 'button',
+        class: 'chip chip-button',
+        'aria-pressed': String(input.value.trim().toLocaleLowerCase() === g.toLocaleLowerCase()),
+        onclick: (event) => {
+          input.value = g;
+          input.dispatchEvent(new Event('input'));
+          for (const chip of event.currentTarget.parentElement.children) chip.setAttribute('aria-pressed', String(chip === event.currentTarget));
+        },
+      }, g),
+    );
+  }
+
+  function renderGroupChips(container, groups, input) {
+    container.hidden = groups.length === 0;
+    container.setAttribute('role', 'group');
+    container.setAttribute('aria-label', t('participants.existingGroups'));
+    setChildren(container, groupChips(groups, input));
+  }
 
   function viewRow(p) {
     return h(
@@ -105,9 +132,9 @@ export function createParticipantsView({ store, openImport }) {
     const groupId = `edit-group-${p.id}`;
     const phoneId = `edit-phone-${p.id}`;
     const error = h('p', { class: 'field-error', role: 'alert' });
-    const nameField = h('input', { id: nameId, type: 'text', value: p.name, maxlength: 60, required: true, autocomplete: 'off' });
-    const groupField = h('input', { id: groupId, type: 'text', value: p.group, maxlength: 60, list: 'group-options', autocomplete: 'off' });
-    const phoneField = h('input', { id: phoneId, type: 'tel', inputmode: 'tel', value: p.phone || '', maxlength: 25, autocomplete: 'off', placeholder: t('participants.phonePlaceholder') });
+    const nameField = h('input', { id: nameId, type: 'text', value: p.name, maxlength: 60, required: true });
+    const groupField = h('input', { id: groupId, type: 'text', value: p.group, maxlength: 60 });
+    const phoneField = h('input', { id: phoneId, type: 'text', inputmode: 'tel', value: p.phone || '', maxlength: 25, placeholder: t('participants.phonePlaceholder') });
     const fields = { name: nameField, group: groupField, phone: phoneField };
     const cancel = () => {
       editingId = null;
@@ -134,7 +161,11 @@ export function createParticipantsView({ store, openImport }) {
           onkeydown: (event) => event.key === 'Escape' && cancel(),
         },
         h('div', { class: 'field' }, h('label', { for: nameId }, t('participants.name')), nameField),
-        h('div', { class: 'field' }, h('label', { for: groupId }, t('participants.group')), groupField),
+        h('div', { class: 'field' }, h('label', { for: groupId }, t('participants.group')), groupField, (() => {
+          const chips = h('div', { class: 'group-chips' });
+          renderGroupChips(chips, listGroups(store.getState().participants), groupField);
+          return chips;
+        })()),
         h('div', { class: 'field' }, h('label', { for: phoneId }, t('participants.phone')), phoneField),
         h('div', { class: 'row-actions' }, h('button', { type: 'submit', class: 'btn btn-primary' }, t('common.save')), h('button', { type: 'button', class: 'btn', onclick: cancel }, t('common.cancel'))),
         error,
@@ -150,7 +181,7 @@ export function createParticipantsView({ store, openImport }) {
     $('#clear-all').hidden = participants.length === 0;
     $('#export-config').disabled = participants.length === 0;
     setChildren(list, participants.map((p) => (p.id === editingId ? editRow(p) : viewRow(p))));
-    setChildren($('#group-options'), listGroups(participants).map((g) => h('option', { value: g })));
+    renderGroupChips($('#group-chips'), listGroups(participants), groupInput);
   }
 
   return { render };

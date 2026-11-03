@@ -22,6 +22,9 @@ export function h(tag, props = {}, ...children) {
     else if (key in el && typeof value !== 'string') el[key] = value;
     else el.setAttribute(key, value === true ? '' : value);
   }
+  if (tag === 'input' || tag === 'textarea' || tag === 'form') {
+    for (const [key, value] of Object.entries(NO_AUTOFILL)) if (!el.hasAttribute(key)) el.setAttribute(key, value);
+  }
   for (const child of children.flat()) {
     if (child === null || child === undefined || child === false) continue;
     el.append(child instanceof Node ? child : String(child));
@@ -29,8 +32,41 @@ export function h(tag, props = {}, ...children) {
   return el;
 }
 
+// Attributes that stop browser autofill, autocomplete history, password-manager
+// overlays and keyboard suggestions on free-text fields.
+const NO_AUTOFILL = {
+  autocomplete: 'off',
+  autocorrect: 'off',
+  spellcheck: 'false',
+  'data-lpignore': 'true', // LastPass
+  'data-1p-ignore': 'true', // 1Password
+  'data-bwignore': 'true', // Bitwarden
+  'data-form-type': 'other', // Dashlane
+};
+
+/** Applies NO_AUTOFILL to every text field (and form) inside `root`. */
+export function disableAutofill(root = document) {
+  const fields = root.querySelectorAll('form, input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), textarea');
+  for (const el of fields) {
+    for (const [key, value] of Object.entries(NO_AUTOFILL)) el.setAttribute(key, value);
+  }
+}
+
 /** Decorative emoji, hidden from screen readers (the text label carries the meaning). */
 export const icon = (emoji) => h('span', { class: 'icon', 'aria-hidden': 'true' }, emoji);
+
+/**
+ * Shrinks the font of a single-line element until its text fits (down to minPx).
+ * The element keeps a fixed line box, so this never changes the layout height.
+ */
+export function fitText(el, minPx = 16) {
+  el.style.fontSize = '';
+  let size = parseFloat(getComputedStyle(el).fontSize);
+  while (el.scrollWidth > el.clientWidth + 1 && size > minPx) {
+    size -= 1;
+    el.style.fontSize = `${size}px`;
+  }
+}
 
 /** Replaces all children of `el`. */
 export function setChildren(el, ...children) {

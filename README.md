@@ -6,7 +6,7 @@ The interface is available in **Spanish and English**, works on phones and deskt
 
 ## Features
 
-- **Event details** (optional): name, date and budget. They appear in the message and on each person's reveal page, next to their result.
+- **Event details** (optional): name, date and budget (a number plus a currency symbol; letters are rejected). They appear in the message and on each person's reveal page, next to their result.
 - **Participants**: add, edit and remove people by hand. Names are required and must be unique (case-insensitive). Each person can optionally belong to a **family group** (free text with suggestions) and have a **phone number** (with country code), so the WhatsApp button opens their chat directly.
 - **Import** from `.txt`, `.csv` or `.json` files, or paste a list. A preview shows exactly what will be imported and flags empty lines, duplicates and names that already exist.
 - **Export** the whole configuration (event, participants, groups, phones and rules) to a JSON file so you can reuse it next year.
@@ -33,6 +33,7 @@ The interface is available in **Spanish and English**, works on phones and deskt
   - **Reveal all**: an organizer option, behind an explicit confirmation, for when someone loses their link.
 - **Draw code**: every draw gets a short code such as `#A7K2`. It is shown to the organizer, included in each message and printed on each person's reveal page. Running the draw again produces a new code, while links already sent keep working and still show the old code. So when you redo a draw, tell the group *"the valid one is #B9X3"*, and anyone holding a link with another code knows it is outdated.
 - **Link preview**: shared links show a preview card (title, description and image). The secret part of the link is after `#`, which is never sent to servers or preview crawlers, so the preview cannot reveal anything.
+- **No autofill**: form fields opt out of browser autofill, autocomplete history, keyboard suggestions and password-manager overlays. Existing family groups appear as one-tap buttons instead of a suggestion list.
 - **Installable**: app icons and a web manifest, so it can be added to the home screen on iOS and Android.
 
 ## Publishing on GitHub Pages (step by step)

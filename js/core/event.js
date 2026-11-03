@@ -3,7 +3,30 @@
 import { cleanText } from './participants.js';
 
 export const MAX_EVENT_NAME = 60;
-export const MAX_BUDGET = 30;
+const MAX_AMOUNT = 10;
+
+// Budget = amount (digits and . , only) + currency symbol. Stored as display text ("30 €").
+export const CURRENCIES = ['€', '$', '£', '¥', '₹', '₽', '₺', '₩', '₪', '₱'];
+const SUFFIX_CURRENCIES = new Set(['€', '₽', '₺']); // written after the amount: "30 €"
+
+export function cleanAmount(value) {
+  return String(value ?? '').replace(/[^\d.,]/g, '').slice(0, MAX_AMOUNT);
+}
+
+export function formatBudget(amount, currency) {
+  const clean = cleanAmount(amount);
+  if (!/\d/.test(clean)) return '';
+  const symbol = CURRENCIES.includes(currency) ? currency : CURRENCIES[0];
+  return SUFFIX_CURRENCIES.has(symbol) ? `${clean} ${symbol}` : `${symbol}${clean}`;
+}
+
+/** "30 €", "£25", "máx. 30€" → { amount: '30', currency: '€' } */
+export function parseBudget(text) {
+  const value = cleanText(text);
+  const currency = CURRENCIES.find((c) => value.includes(c)) || CURRENCIES[0];
+  const amount = (value.match(/\d[\d.,]*/) || [''])[0];
+  return { amount: cleanAmount(amount), currency };
+}
 
 export function createEvent() {
   return { name: '', date: '', budget: '' };
@@ -14,7 +37,7 @@ export function sanitizeEvent(raw) {
   return {
     name: cleanText(raw?.name).slice(0, MAX_EVENT_NAME),
     date,
-    budget: cleanText(raw?.budget).slice(0, MAX_BUDGET),
+    budget: (({ amount, currency }) => formatBudget(amount, currency))(parseBudget(raw?.budget)),
   };
 }
 

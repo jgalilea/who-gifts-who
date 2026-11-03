@@ -53,8 +53,10 @@
       <p data-i18n="reveal.errorText">Este enlace está incompleto o dañado. Pide a quien organiza el sorteo que te lo vuelva a enviar.</p>
     </div>
 
-    <div id="reveal-ready" class="card reveal-card">
-      <h1 class="hello"><span data-i18n="reveal.hello">Hola,</span> <span id="giver-name" class="giver-name">…</span></h1>
+    <!-- Rendered as a skeleton (is-pending) with every line already in place, so filling it
+         in after decrypting never moves anything. -->
+    <div id="reveal-ready" class="card reveal-card is-pending" aria-busy="true">
+      <h1 class="hello"><span data-i18n="reveal.hello">Hola,</span> <span id="giver-name" class="giver-name skeleton-text">&nbsp;</span></h1>
 
       <svg class="gift" id="gift" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
         <defs>
@@ -93,18 +95,22 @@
       <!-- Both layers share one grid cell, so swapping them never changes the card's height. -->
       <div class="reveal-stage">
         <div id="reveal-before" class="reveal-layer">
-          <p id="reveal-intro" data-i18n="reveal.intro">Tu amigo invisible te espera dentro de este regalo.</p>
+          <p id="reveal-intro" class="reveal-intro" data-i18n="reveal.intro">Tu amigo invisible te espera dentro de este regalo.</p>
           <button type="button" id="reveal-btn" class="btn btn-primary btn-large" disabled><span data-i18n="reveal.button">Descubrir a quién le regalo</span></button>
         </div>
         <div id="reveal-result" class="reveal-layer is-hidden" aria-live="polite">
           <p class="eyebrow" data-i18n="reveal.youGift">Le regalas a…</p>
-          <p id="receiver-name" class="big-name" tabindex="-1"></p>
+          <p id="receiver-name" class="big-name one-line-name" tabindex="-1"></p>
           <p class="hint" data-i18n="reveal.keepSecret">¡Shhh! Guarda el secreto 🤫</p>
         </div>
       </div>
 
-      <!-- Filled after decrypting. It sits at the bottom of the card, so adding it never moves the gift. -->
-      <dl id="reveal-details" class="reveal-details" hidden></dl>
+      <dl id="reveal-details" class="reveal-details">
+        <div class="detail"><dt data-i18n="reveal.event">Evento</dt><dd id="detail-event" class="skeleton-text">&nbsp;</dd></div>
+        <div class="detail"><dt data-i18n="reveal.date">Fecha</dt><dd id="detail-date" class="skeleton-text">&nbsp;</dd></div>
+        <div class="detail"><dt data-i18n="reveal.budget">Presupuesto</dt><dd id="detail-budget" class="skeleton-text">&nbsp;</dd></div>
+        <div class="detail"><dt data-i18n="reveal.code">Código del sorteo</dt><dd id="detail-code" class="skeleton-text">&nbsp;</dd></div>
+      </dl>
     </div>
   </main>
 

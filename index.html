@@ -107,7 +107,10 @@
           </div>
           <div class="field">
             <label for="event-budget"><span data-i18n="event.budget">Presupuesto</span> <span class="optional" data-i18n="common.optional">(opcional)</span></label>
-            <input id="event-budget" type="text" maxlength="30" autocomplete="off" data-i18n-placeholder="event.budgetPlaceholder">
+            <div class="budget-input">
+              <input id="event-budget" type="text" inputmode="decimal" maxlength="10" autocomplete="off" data-i18n-placeholder="event.budgetPlaceholder">
+              <select id="event-currency" data-i18n-aria="event.currency"></select>
+            </div>
           </div>
         </div>
       </div>
@@ -130,21 +133,21 @@
         <form id="add-participant-form" class="participant-form" novalidate>
           <div class="field">
             <label for="new-name" data-i18n="participants.name">Nombre</label>
-            <input id="new-name" name="name" type="text" autocomplete="off" required maxlength="60" aria-describedby="add-error">
+            <input id="new-name" type="text" autocomplete="off" required maxlength="60" aria-describedby="add-error">
           </div>
           <div class="field">
             <label for="new-group"><span data-i18n="participants.group">Grupo familiar</span> <span class="optional" data-i18n="common.optional">(opcional)</span></label>
-            <input id="new-group" name="group" type="text" list="group-options" autocomplete="off" maxlength="60" data-i18n-placeholder="participants.groupPlaceholder">
+            <input id="new-group" type="text" autocomplete="off" maxlength="60" data-i18n-placeholder="participants.groupPlaceholder">
+            <div id="group-chips" class="group-chips" hidden></div>
           </div>
           <div class="field">
             <label for="new-phone"><span data-i18n="participants.phone">Teléfono</span> <span class="optional" data-i18n="common.optional">(opcional)</span></label>
-            <input id="new-phone" name="phone" type="tel" inputmode="tel" autocomplete="off" maxlength="25" data-i18n-placeholder="participants.phonePlaceholder" aria-describedby="phone-hint">
+            <input id="new-phone" type="text" inputmode="tel" autocomplete="off" maxlength="25" data-i18n-placeholder="participants.phonePlaceholder" aria-describedby="phone-hint">
           </div>
           <button type="submit" class="btn btn-primary"><span data-i18n="participants.add">Añadir</span></button>
           <p class="hint field-hint" id="phone-hint" data-i18n="participants.phoneHint"></p>
           <p class="field-error" id="add-error" role="alert"></p>
         </form>
-        <datalist id="group-options"></datalist>
 
         <p id="participants-empty" class="empty" data-i18n="participants.empty"></p>
         <ul id="participant-list" class="participant-list"></ul>

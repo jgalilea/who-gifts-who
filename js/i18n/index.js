@@ -65,10 +65,13 @@ export function formatNumber(n) {
 }
 
 /** 'YYYY-MM-DD' → "martes, 24 de diciembre de 2026" / "Thursday, 24 December 2026". */
-export function formatEventDate(value) {
+export function formatEventDate(value, { short = false } = {}) {
   const date = parseEventDate(value);
   if (!date) return '';
-  return new Intl.DateTimeFormat(locale(), { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(date);
+  const options = short
+    ? { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' } // "mié, 23 dic 2026"
+    : { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+  return new Intl.DateTimeFormat(locale(), options).format(date);
 }
 
 /** Lists names naturally: "Ana, Luis y Eva" / "Ana, Luis and Eva". */
