@@ -29,7 +29,12 @@ export async function createDraw(participants, rules, event) {
 
 const sameEvent = (a, b) => JSON.stringify(sanitizeEvent(a)) === JSON.stringify(sanitizeEvent(b));
 
-export function createDrawView({ store, openInPerson, reasonText, sections }) {
+/** True when participants, rules or event details changed after the draw. */
+export function isDrawStale(draw, state, derived) {
+  return draw.signature !== derived.signature || !sameEvent(draw.event, state.event);
+}
+
+export function createDrawView({ store, openInPerson, openSummary, reasonText, sections }) {
   const { actions } = store;
   const drawBtn = $('#do-draw');
   const allResults = $('#all-results');
@@ -44,7 +49,8 @@ export function createDrawView({ store, openInPerson, reasonText, sections }) {
       allResults.hidden = true;
       toast(t('draw.doneToast'));
       sections.expand('draw-body');
-      $('#draw-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Next step: delivering the results.
+      $('#draw-done').scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (error) {
       console.error(error);
       toast(t('draw.error'));
@@ -53,13 +59,9 @@ export function createDrawView({ store, openInPerson, reasonText, sections }) {
     }
   }
 
-  drawBtn.addEventListener('click', runDraw);
-
-  $('#redo-draw').addEventListener('click', async () => {
-    const code = store.getState().draw?.code || '';
-    const ok = await confirmDialog({ title: t('draw.redoTitle'), message: t('draw.redoMessage', { code }), confirmLabel: t('draw.redo'), danger: true });
-    if (ok) runDraw();
-  });
+  // Both open the review summary first; the summary calls runDraw on confirmation.
+  drawBtn.addEventListener('click', () => openSummary());
+  $('#redo-draw').addEventListener('click', () => openSummary());
 
   $('#next-draw').addEventListener('click', async () => {
     const ok = await confirmDialog({ title: t('draw.nextTitle'), message: t('draw.nextMessage'), confirmLabel: t('draw.next') });
@@ -183,7 +185,7 @@ export function createDrawView({ store, openInPerson, reasonText, sections }) {
       count: draw.assignments.length,
     });
     $('#draw-code').textContent = draw.code ? `#${draw.code}` : '—';
-    const stale = draw.signature !== derived.signature || !sameEvent(draw.event, state.event);
+    const stale = isDrawStale(draw, state, derived);
     $('#draw-stale').hidden = !stale;
     $('#draw-stale').textContent = stale ? t('draw.stale') : '';
     const phones = new Map(state.participants.map((p) => [p.id, p.phone]));
@@ -191,5 +193,5 @@ export function createDrawView({ store, openInPerson, reasonText, sections }) {
     if (!allResults.hidden) renderAllResults(draw);
   }
 
-  return { render };
+  return { render, runDraw };
 }

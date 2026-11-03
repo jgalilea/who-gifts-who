@@ -117,8 +117,8 @@ export default {
   'prob.notAllowed': 'not allowed',
 
   'draw.title': 'Draw',
-  'draw.intro': 'The draw randomly picks one of all valid combinations, each equally likely. Results will not be shown on this screen.',
-  'draw.button': 'Run the draw',
+  'draw.intro': 'Before drawing you will see a summary to check everything. The app randomly picks one of all valid combinations, each equally likely, and will not show the results on this screen.',
+  'draw.button': 'Review and draw',
   'draw.doneToast': 'Draw complete. Results are hidden.',
   'draw.error': 'The draw could not be completed. Check the rules.',
   'draw.doneTitle': 'Draw complete.',
@@ -140,8 +140,6 @@ export default {
   'draw.hideAll': 'Hide results',
   'draw.gives': 'gifts',
   'draw.redo': 'Run the draw again',
-  'draw.redoTitle': 'Run the draw again?',
-  'draw.redoMessage': ({ code }) => `A new draw will be created, with new links and a new code (the current one is #${code}). Links already sent will still open and show the previous result with code #${code}: send the new ones and tell the group which code is valid.`,
   'draw.discard': 'Delete draw',
   'draw.discardTitle': 'Delete the draw?',
   'draw.discardMessage': 'The draw will be deleted from this device. Links already sent will keep working.',
@@ -200,15 +198,15 @@ export default {
   'reveal.youGift': 'You are gifting…',
   'reveal.keepSecret': 'Shhh! Keep it secret 🤫',
   'reveal.createOwn': 'Organize your own Secret Santa with Who Gifts Who',
-  'event.title': 'Event',
-  'event.hint': 'All optional. Shown in the message and on each participant’s page, next to their result.',
+  'event.title': 'Details for the message',
+  'event.hint': 'Optional. Shown in the message and on each participant’s page, next to their result.',
   'event.name': 'Event name',
   'event.namePlaceholder': 'e.g. Family Christmas 2026',
   'event.date': 'Date',
   'event.budget': 'Budget',
   'event.budgetPlaceholder': '25',
   'event.currency': 'Currency',
-  'event.badgeEmpty': 'No details',
+  'event.badgeEmpty': 'Optional: event name, date and budget',
   'participants.phone': 'Phone',
   'participants.phonePlaceholder': '+44 7700 900123',
   'participants.phoneHint': 'Include the country code. Used to open their WhatsApp chat directly.',
@@ -233,7 +231,7 @@ export default {
   'reveal.notSet': 'Not set',
   'rules.previousRule': ({ draw, applies, total }) => `Do not repeat pairings of ${draw}` + (applies === total ? ` (${total} ${plural(total, 'pair', 'pairs')}).` : ` (${applies} of ${total} pairs apply to the current participants).`),
   'history.title': 'Previous draws',
-  'history.hint': 'Avoid repeating pairings from previous years. Pairs are never shown on screen.',
+  'history.hint': 'To avoid repeating pairings from previous years.',
   'history.import': 'Import previous draws',
   'history.export': 'Export draws',
   'history.exportDraw': 'Export draw',
@@ -271,31 +269,30 @@ export default {
   'help.start.title': `How it works, in short`,
   'help.start.body': `<p><strong>Who Gifts Who</strong> runs a Secret Santa without a server: everything happens in your browser and is saved on this device.</p>
 <ol>
-<li><strong>Event</strong> (optional): name, date and budget.</li>
 <li><strong>Participants</strong>: add them by hand or import a list.</li>
-<li><strong>Rules</strong>: who cannot gift whom.</li>
-<li><strong>Probabilities</strong> (optional): how likely each pairing is.</li>
-<li><strong>Draw</strong>: the app picks at random and you deliver the results by secret link or in person.</li>
+<li><strong>Rules</strong>: who cannot gift whom (e.g. families).</li>
+<li><strong>Draw</strong>: review the summary, draw, and deliver the results by secret link or in person.</li>
 </ol>
-<p>Each section can be collapsed by tapping its title.</p>`,
-  'help.event.title': `1 · Event`,
-  'help.event.body': `<p>Name, date and budget are optional. If you fill them in, they appear in the message you send and on each participant’s page, next to their result.</p>
-<p>If you change them after the draw, links already generated keep the old details: the app warns you so you can run the draw again.</p>`,
-  'help.participants.title': `2 · Participants`,
+<p>The <strong>bar at the bottom</strong> always tells you the next step and takes you there in one tap.</p>
+<p>Optionally add <strong>details for the message</strong> (name, date and budget) and check the <strong>probabilities</strong> (advanced). Each section can be collapsed by tapping its title.</p>`,
+  'help.event.title': `Details for the message (optional)`,
+  'help.event.body': `<p>They are inside the <strong>Draw</strong> section, folded. Event name, date and budget (a number and the currency) are optional. If you fill them in, they appear in the message you send and on each participant’s page, next to their result.</p>
+<p>You can also add them from the summary before drawing. If you change them after the draw, links already generated keep the old details: the app warns you so you can run the draw again.</p>`,
+  'help.participants.title': `1 · Participants`,
   'help.participants.body': `<ul>
 <li><strong>Name</strong>: required and unique (case-insensitive).</li>
-<li><strong>Family group</strong>: optional. Used by the “Exclude family members” rule. Type the same name for the whole family.</li>
-<li><strong>Phone</strong>: optional, with country code (+44…). With it, the WhatsApp button opens their chat directly.</li>
+<li><strong>Family group</strong>: optional. Used by the “Exclude family members” rule. Existing groups appear as buttons you can pick with one tap.</li>
+<li><strong>Phone</strong>: optional (tap “+ Add phone”), with country code (+44…). With it, the WhatsApp button opens their chat directly.</li>
 </ul>
 <p><strong>Import list</strong>: upload a .txt or .csv with one person per line (<code>name;group;phone</code>), paste the list, or use an exported .json. You get a preview with warnings before confirming.</p>
 <p><strong>Export configuration</strong>: downloads everything (event, participants, rules and previous draws) to reuse next year. It does not include the current draw’s results.</p>`,
-  'help.rules.title': `3 · Rules`,
+  'help.rules.title': `2 · Rules`,
   'help.rules.body': `<ul>
 <li><strong>Nobody gifts themselves</strong>: always on.</li>
 <li><strong>Exclude family members</strong>: nobody gifts someone from their own family group.</li>
-<li><strong>Individual exclusion</strong>: “X cannot gift Y”, one way or both ways (e.g. couples).</li>
+<li><strong>Individual exclusion</strong> (tap “+ Add individual exclusion”): “X cannot gift Y”, one way or both ways (e.g. couples).</li>
 </ul>
-<p>Below you can see whether valid combinations exist. If none do, the app explains why and blocks the draw. If there are very few (1 or 2), it warns you: someone could deduce the others’ results.</p>`,
+<p>Below you can see whether valid combinations exist and how many. If none do, the app explains why and blocks the draw. If there are very few (1 or 2), it warns you: someone could deduce the others’ results.</p>`,
   'help.previous.title': `Previous draws (no repeated pairs)`,
   'help.previous.body': `<p>Prevents pairings from previous years from repeating. Each previous draw is a rule you can remove at any time. The pairs are <strong>never shown</strong>: you only see “Do not repeat the pairings of…”.</p>
 <p>Three ways to add a previous draw:</p>
@@ -305,17 +302,17 @@ export default {
 <li><strong>Paste last year’s secret links</strong> (decrypted on your device) or <strong>type the pairs</strong>, one per line: <code>Ana &gt; Luis</code>.</li>
 </ul>
 <p>Pairs are stored by name: if someone no longer takes part, their pair simply does not apply.</p>`,
-  'help.probabilities.title': `4 · Probabilities`,
-  'help.probabilities.body': `<p>Hidden by default so nobody is influenced. When shown you get:</p>
+  'help.probabilities.title': `Probabilities (advanced)`,
+  'help.probabilities.body': `<p>Optional, at the end of the page and hidden by default so nobody is influenced. When shown you get:</p>
 <ul>
 <li>The <strong>number of valid combinations</strong>.</li>
 <li>For each person, the probability of gifting each other person and of being gifted by each of them.</li>
-<li>A “who gifts whom” <strong>matrix</strong>: rows = giver, columns = receiver; “—” means not allowed.</li>
+<li>A “who gifts whom” <strong>matrix</strong>: rows = giver, columns = receiver. “—” = forbidden by a rule; “0%” = allowed, but the other rules mean it never happens.</li>
 </ul>
 <p>Up to 20 people the calculation is exact; above that it is a sampling estimate (labelled as such).</p>`,
-  'help.draw.title': `5 · Draw`,
-  'help.draw.body': `<p>The app randomly picks <strong>one of all valid combinations</strong>, each equally likely (matching the probabilities shown), using the browser’s secure random generator.</p>
-<p>After the draw <strong>nobody sees the results on screen</strong>, not even the organizer. Then you choose how to deliver them: links or in person.</p>`,
+  'help.draw.title': `3 · Draw`,
+  'help.draw.body': `<p>Tap <strong>Review and draw</strong> (or “Draw” in the bottom bar). You get a <strong>summary</strong> of participants, rules, possible combinations and event details; if everything looks right, confirm.</p>
+<p>The app randomly picks <strong>one of all valid combinations</strong>, each equally likely, using the browser’s secure random generator. After the draw <strong>nobody sees the results on screen</strong>, not even the organizer. Then you choose how to deliver them: links or in person.</p>`,
   'help.links.title': `Delivering by secret link`,
   'help.links.body': `<p>Each person gets their own link. The result is <strong>encrypted inside the link</strong> (after “#”), so it never goes through a server and can’t be read from the address.</p>
 <ul>
@@ -356,4 +353,36 @@ export default {
 <li>The draw and its links are stored on this device so you can resend them. Use “Delete draw” when you are done if you prefer.</li>
 <li>Link previews (in WhatsApp, etc.) never show the result.</li>
 </ul>`,
+  'participants.addPhone': '+ Add phone (optional)',
+  'rules.openExclusion': '+ Add individual exclusion',
+  'common.close': 'Close',
+  'prob.badge': 'Advanced',
+  'summary.title': 'Review before drawing',
+  'summary.redoTitle': 'Run the draw again',
+  'summary.confirm': 'Draw',
+  'summary.redoConfirm': 'Draw again',
+  'summary.back': 'Back',
+  'summary.participants': 'Participants',
+  'summary.rules': 'Rules',
+  'summary.combinations': 'Possible combinations',
+  'summary.event': 'Event details',
+  'summary.noEvent': 'No details (optional)',
+  'summary.addEvent': 'Add details',
+  'summary.editEvent': 'Edit',
+  'summary.countPending': 'Calculating…',
+  'summary.countLarge': ({ limit }) => `Many (more than ${limit} people)`,
+  'summary.namesMore': ({ names, count }) => `${names} and ${count} more`,
+  'summary.redoWarning': ({ code }) => `Links already sent${code ? ` (code #${code})` : ''} will still open with the previous result: send the new ones and tell the group the new code.`,
+  'bar.label': 'Next step',
+  'bar.needPeople': ({ count, min }) => (count ? `${count} of at least ${min} people` : `Add at least ${min} people`),
+  'bar.addPeople': 'Add people',
+  'bar.blocked': 'No valid combination',
+  'bar.seeWhy': 'See why',
+  'bar.stale': 'You made changes after the draw',
+  'bar.redo': 'Draw again',
+  'bar.done': ({ code }) => `Draw ${code} done`,
+  'bar.send': 'Send results',
+  'bar.ready': ({ count }) => `${count} people ready`,
+  'bar.readyCount': ({ count, combos }) => `${count} people · ${combos} combinations`,
+  'bar.draw': 'Draw',
 };

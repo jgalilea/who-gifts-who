@@ -16,10 +16,22 @@ export function createParticipantsView({ store, openImport }) {
   const list = $('#participant-list');
   let editingId = null;
 
+  // The phone field is optional and folded away until asked for.
+  const phoneToggle = $('#toggle-phone');
+  const showPhone = (show, focus = true) => {
+    $('#phone-field').hidden = !show;
+    $('#phone-hint').hidden = !show;
+    phoneToggle.hidden = show;
+    phoneToggle.setAttribute('aria-expanded', String(show));
+    if (show && focus) phoneInput.focus();
+  };
+  phoneToggle.addEventListener('click', () => showPhone(true));
+
   /** Shows an error code and flags the field it belongs to. */
   const showError = (el, code, fields) => {
     el.textContent = code ? t(`errors.${code}`) : '';
     const target = !code ? null : code.startsWith('phone') ? fields.phone : code.startsWith('group') ? fields.group : fields.name;
+    if (target === phoneInput) showPhone(true, false);
     for (const input of Object.values(fields)) input.setAttribute('aria-invalid', String(input === target));
     target?.focus();
   };

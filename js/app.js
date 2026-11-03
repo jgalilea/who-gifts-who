@@ -10,13 +10,16 @@ import { $$, disableAutofill } from './ui/dom.js';
 import { createEventView } from './ui/event-view.js';
 import { createParticipantsView } from './ui/participants-view.js';
 import { createImportView } from './ui/import-view.js';
-import { createRulesView } from './ui/rules-view.js';
+import { createRulesView, reasonText } from './ui/rules-view.js';
 import { createProbabilitiesView } from './ui/probabilities-view.js';
 import { createDrawView } from './ui/draw-view.js';
 import { createInPersonView } from './ui/inperson-view.js';
 import { initSections } from './ui/sections.js';
 import { createHistoryView } from './ui/history-view.js';
 import { createHelpView } from './ui/help-view.js';
+import { createCountService } from './ui/count-service.js';
+import { createSummaryView } from './ui/summary-view.js';
+import { createActionBar } from './ui/action-bar.js';
 
 /** Data derived from participants + rules, shared by every view. */
 function derive({ participants, rules }) {
@@ -30,22 +33,33 @@ function init() {
   const store = createAppState();
   const sections = initSections();
 
+  const counts = createCountService();
+  let derived = null;
+  let derivedFor = null;
+  const getDerived = () => derived;
+
   const importView = createImportView({ store });
   const inPersonView = createInPersonView();
-  const rulesView = createRulesView({ store });
+  const eventView = createEventView({ store, sections });
+  // The summary needs the draw view's runDraw and vice versa: wire them lazily.
+  let summaryView = null;
+  const openSummary = () => summaryView.open();
+  const drawView = createDrawView({ store, openInPerson: inPersonView.open, openSummary, reasonText, sections });
+  summaryView = createSummaryView({ store, counts, getDerived, runDraw: drawView.runDraw, openEventDetails: eventView.open });
+
   const views = [
-    createEventView({ store }),
     createParticipantsView({ store, openImport: importView.open }),
-    rulesView,
+    createRulesView({ store, counts }),
+    eventView,
+    drawView,
     createProbabilitiesView({ store }),
-    createDrawView({ store, openInPerson: inPersonView.open, reasonText: rulesView.reasonText, sections }),
     importView,
     createHistoryView({ store }),
     createHelpView(),
+    summaryView,
+    createActionBar({ store, counts, getDerived, openSummary, sections }),
   ];
 
-  let derived = null;
-  let derivedFor = null;
   function render(state) {
     if (!derived || derivedFor.participants !== state.participants || derivedFor.rules !== state.rules) {
       derived = derive(state);

@@ -3,7 +3,7 @@
 import { $, h, setChildren } from './dom.js';
 import { t } from '../i18n/index.js';
 
-const TOPICS = ['start', 'event', 'participants', 'rules', 'previous', 'probabilities', 'draw', 'links', 'inperson', 'code', 'organizer', 'nextYear', 'privacy'];
+const TOPICS = ['start', 'participants', 'rules', 'previous', 'draw', 'event', 'links', 'inperson', 'code', 'organizer', 'probabilities', 'nextYear', 'privacy'];
 
 export function createHelpView() {
   const dialog = $('#help-dialog');

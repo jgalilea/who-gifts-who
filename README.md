@@ -8,18 +8,21 @@ The interface is in **Spanish and English**, works on phones and desktops (light
 
 ## Quick start
 
-1. **Event** (optional): name, date and budget.
-2. **Participants**: add people one by one, or import a list (`.txt`, `.csv`, `.json` or pasted text).
-3. **Rules**: exclude family members, add individual exclusions, or avoid repeating previous draws.
-4. **Probabilities** (optional, hidden by default): see how likely each pairing is.
-5. **Draw**: the app picks a result. Then send each person their **secret link** (WhatsApp, share or copy), or do it **in person** by passing the phone around.
+1. **Participants**: add people one by one, or import a list (`.txt`, `.csv`, `.json` or pasted text).
+2. **Rules**: exclude family members, add individual exclusions, or avoid repeating previous draws.
+3. **Draw**: tap *Review and draw*. You get a summary to check everything, and can add optional event details (name, date, budget) for the message. Then send each person their **secret link** (WhatsApp, share or copy), or do it **in person** by passing the phone around.
 
-The **Help** button in the header opens a guide that explains every part of the app.
+A **sticky bar at the bottom** always shows the next step: add people, see why the rules don't work, draw, or send the results. It takes you there in one tap. **Probabilities** are an optional, advanced section at the end. The **Help** button in the header explains every part of the app.
 
 ## Features
 
+### Simple by default
+- **Three steps** (participants → rules → draw). Optional and advanced things stay folded until you ask for them: the phone field, the individual-exclusion form, previous draws, event details and probabilities.
+- **Sticky action bar** with the next step. It hides while the draw section is on screen and while you type on a phone.
+- **Review before drawing**: a summary of participants, rules, possible combinations and event details, with a warning if there are very few combinations or if you are redoing a draw.
+
 ### Setup
-- **Event details** (optional): name, date and budget. The budget is a number plus a currency symbol, and letters are rejected. These details appear in the message and on each person's reveal page, next to their result.
+- **Event details** (optional, inside the draw section): name, date and budget. The budget is a number plus a currency symbol, and letters are rejected. These details appear in the message and on each person's reveal page, next to their result.
 - **Participants**: add, edit and remove people. Names are required and unique (case-insensitive). Each person can optionally have:
   - a **family group**: free text, with existing groups offered as one-tap buttons;
   - a **phone number** with country code: the WhatsApp button then opens their chat directly.
@@ -255,8 +258,10 @@ js/core/              Pure logic, no DOM (unit-tested in Node)
 js/i18n/              Translations (es.js, en.js) and formatting helpers
 js/ui/                One module per section or dialog, each with render(state, derived):
                       event, participants, import, rules, probabilities, draw,
+                      summary (review before drawing), action-bar (sticky next step),
                       in-person, history (draws import/export), help, sections,
-                      plus shared helpers (dom, feedback, share, icons)
+                      plus shared helpers (dom, feedback, share, icons, rule-texts,
+                      count-service)
 scripts/              Optional maintenance scripts (update-version.mjs: cache busting)
 examples/             Sample import files
 tests/                Node tests for the logic

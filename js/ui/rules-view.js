@@ -1,25 +1,44 @@
-// Rules section: family toggle, individual exclusions, active rules and feasibility status
-// (including how many valid combinations exist, computed in the background).
+// Rules section: family toggle, individual exclusions (form shown on demand), active rules
+// and feasibility status (including how many valid combinations exist).
 import { $, h, icon, setChildren, fillSelect } from './dom.js';
 import { t, formatList, formatCount } from '../i18n/index.js';
-import { groupMembers } from '../core/participants.js';
-import { applicablePairs } from '../core/rules.js';
-import { drawName } from './history-view.js';
-import { runTask, CancelledError } from '../compute.js';
+import { describeRules } from './rule-texts.js';
 
 // With this few combinations, knowing your own result lets you deduce others'.
-const FEW_COMBINATIONS = 2;
+export const FEW_COMBINATIONS = 2;
 
-export function createRulesView({ store }) {
+/** Human-readable explanation of why no valid assignment exists. */
+export function reasonText(reason) {
+  const p = reason.params;
+  if (reason.code === 'hall') {
+    return t('feasibility.hall', { givers: formatList(p.givers), receivers: formatList(p.receivers), giverCount: p.givers.length, receiverCount: p.receivers.length });
+  }
+  return t(`feasibility.${reason.code}`, p);
+}
+
+export function createRulesView({ store, counts }) {
   const { actions } = store;
   const familyToggle = $('#exclude-family');
   const form = $('#exclusion-form');
+  const openBtn = $('#open-exclusion');
   const fromSelect = $('#exclusion-from');
   const toSelect = $('#exclusion-to');
   const directionSelect = $('#exclusion-direction');
   const errorEl = $('#exclusion-error');
+  let lastDerived = null;
 
   familyToggle.addEventListener('change', () => actions.setExcludeFamily(familyToggle.checked));
+
+  // The exclusion form is only shown when asked for.
+  const showForm = (show, moveFocus = true) => {
+    form.hidden = !show;
+    openBtn.hidden = show;
+    openBtn.setAttribute('aria-expanded', String(show));
+    errorEl.textContent = '';
+    if (moveFocus) (show ? fromSelect : openBtn).focus();
+  };
+  openBtn.addEventListener('click', () => showForm(true));
+  $('#close-exclusion').addEventListener('click', () => showForm(false));
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -32,43 +51,21 @@ export function createRulesView({ store }) {
   });
   [fromSelect, toSelect].forEach((s) => s.addEventListener('change', () => (errorEl.textContent = '')));
 
-  function ruleItem(text, onRemove, removeLabel) {
+  function ruleItem({ text, remove, removeLabel }) {
     return h(
       'li',
       { class: 'rule' },
       h('span', {}, text),
-      onRemove
-        ? h('button', { type: 'button', class: 'btn btn-icon btn-ghost-danger', 'aria-label': removeLabel, title: t('common.remove'), onclick: onRemove }, icon('🗑️'))
+      remove
+        ? h('button', {
+            type: 'button',
+            class: 'btn btn-icon btn-ghost-danger',
+            'aria-label': removeLabel || t('rules.removeLabel', { rule: text }),
+            title: t('common.remove'),
+            onclick: remove,
+          }, icon('🗑️'))
         : h('span', { class: 'chip chip-muted' }, t('rules.always')),
     );
-  }
-
-  /** Human-readable explanation of why no valid assignment exists. */
-  function reasonText(reason) {
-    const p = reason.params;
-    if (reason.code === 'hall') {
-      return t('feasibility.hall', { givers: formatList(p.givers), receivers: formatList(p.receivers), giverCount: p.givers.length, receiverCount: p.receivers.length });
-    }
-    return t(`feasibility.${reason.code}`, p);
-  }
-
-  const feasibilityBadge = (feasibility, count) =>
-    feasibility.ok ? t('rules.badge', { count }) : t('rules.badgeBlocked');
-
-  // Latest combination count: { signature, result } (result is null above 20 people).
-  let count = { signature: null, result: null };
-  function requestCount(derived) {
-    if (!derived.feasibility.ok || count.signature === derived.signature) return;
-    count = { signature: derived.signature, result: null };
-    runTask('count', 'count', { allowed: derived.allowed })
-      .then((result) => {
-        if (count.signature !== derived.signature) return;
-        count.result = result;
-        renderStatus(derived);
-      })
-      .catch((error) => {
-        if (!(error instanceof CancelledError)) console.error(error);
-      });
   }
 
   function renderStatus(derived) {
@@ -79,7 +76,7 @@ export function createRulesView({ store }) {
       setChildren(status, h('strong', {}, t('feasibility.notPossible')), ' ', h('span', {}, reasonText(feasibility.reason)));
       return;
     }
-    const result = count.signature === derived.signature ? count.result : null;
+    const result = counts.get(derived.signature);
     const few = result && result.total <= FEW_COMBINATIONS;
     status.className = `status ${few ? 'status-warn' : 'status-ok'}`;
     setChildren(
@@ -92,44 +89,29 @@ export function createRulesView({ store }) {
         : null,
     );
   }
+  counts.subscribe(() => lastDerived && renderStatus(lastDerived));
 
   function render(state, derived) {
+    lastDerived = derived;
     const { participants, rules } = state;
-    const byId = new Map(participants.map((p) => [p.id, p.name]));
     familyToggle.checked = rules.excludeFamily;
 
     const options = participants.map((p) => ({ value: p.id, label: p.name }));
     fillSelect(fromSelect, options, t('rules.choose'));
     fillSelect(toSelect, options, t('rules.choose'));
     const canAdd = participants.length >= 2;
-    form.querySelectorAll('select, button').forEach((el) => (el.disabled = !canAdd));
+    openBtn.disabled = !canAdd;
+    if (!canAdd && !form.hidden) showForm(false, false);
 
-    const items = [ruleItem(t('rules.noSelf'))];
-    if (rules.excludeFamily) {
-      const groups = groupMembers(participants);
-      const detail = groups.length
-        ? t('rules.familyActive', { groups: formatList(groups.map((g) => `${g.name} (${g.members.length})`)) })
-        : t('rules.familyNoGroups');
-      items.push(ruleItem(detail, () => actions.setExcludeFamily(false), t('rules.removeFamily')));
-    }
-    for (const e of rules.exclusions) {
-      const params = { from: byId.get(e.from), to: byId.get(e.to) };
-      const text = e.mutual ? t('rules.mutual', params) : t('rules.oneWayRule', params);
-      items.push(ruleItem(text, () => actions.removeExclusion(e.id), t('rules.removeLabel', { rule: text })));
-    }
-    for (const entry of rules.previousDraws) {
-      const applies = applicablePairs(entry, participants);
-      const text = t('rules.previousRule', { draw: drawName(entry), applies, total: entry.pairs.length });
-      items.push(ruleItem(text, () => actions.removePreviousDraw(entry.id), t('rules.removeLabel', { rule: text })));
-    }
-    setChildren($('#rules-list'), items);
+    const items = describeRules(state, actions);
+    setChildren($('#rules-list'), items.map(ruleItem));
     const badge = $('#rules-badge');
-    badge.textContent = feasibilityBadge(derived.feasibility, items.length);
+    badge.textContent = derived.feasibility.ok ? t('rules.badge', { count: items.length }) : t('rules.badgeBlocked');
     badge.className = `badge ${derived.feasibility.ok ? 'badge-ok' : 'badge-error'}`;
 
+    counts.request(derived);
     renderStatus(derived);
-    requestCount(derived);
   }
 
-  return { render, reasonText };
+  return { render };
 }

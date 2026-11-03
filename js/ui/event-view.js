@@ -3,7 +3,7 @@ import { $, fillSelect } from './dom.js';
 import { t, formatEventDate } from '../i18n/index.js';
 import { isEventEmpty, CURRENCIES, cleanAmount, formatBudget, parseBudget } from '../core/event.js';
 
-export function createEventView({ store }) {
+export function createEventView({ store, sections }) {
   const nameInput = $('#event-name');
   const dateInput = $('#event-date');
   const amountInput = $('#event-budget');
@@ -40,5 +40,13 @@ export function createEventView({ store }) {
     $('#event-badge').textContent = isEventEmpty(event) ? t('event.badgeEmpty') : summary;
   }
 
-  return { render };
+  /** Opens the folded event details and focuses the first field. */
+  function open() {
+    sections.expand('draw-body');
+    $('#event-details').open = true;
+    $('#event-details').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    nameInput.focus({ preventScroll: true });
+  }
+
+  return { render, open };
 }
