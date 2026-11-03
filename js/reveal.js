@@ -57,7 +57,7 @@ async function init() {
         $('#reveal-result').hidden = false;
         $('#receiver-name').focus?.();
       },
-      reducedMotion() ? 0 : 1100,
+      reducedMotion() ? 0 : 1500,
     );
   });
 }

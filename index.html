@@ -28,166 +28,212 @@
     </div>
   </header>
 
-  <main id="main" class="container">
+  <main id="main" class="container layout">
     <!-- 1. Participants -->
     <section class="card" id="participants-section" aria-labelledby="participants-title">
       <div class="card-head">
-        <h2 id="participants-title"><span class="step" aria-hidden="true">1</span> <span data-i18n="participants.title">Participantes</span></h2>
+        <h2 id="participants-title">
+          <button type="button" class="section-toggle" aria-expanded="true" aria-controls="participants-body">
+            <span class="step" aria-hidden="true">1</span>
+            <span data-i18n="participants.title">Participantes</span>
+            <span class="chevron" aria-hidden="true"></span>
+          </button>
+        </h2>
         <span class="badge" id="participant-count"></span>
       </div>
 
-      <form id="add-participant-form" class="form-row" novalidate>
-        <div class="field">
-          <label for="new-name" data-i18n="participants.name">Nombre</label>
-          <input id="new-name" name="name" type="text" autocomplete="off" required maxlength="60" aria-describedby="add-error">
-        </div>
-        <div class="field">
-          <label for="new-group"><span data-i18n="participants.group">Grupo familiar</span> <span class="optional" data-i18n="common.optional">(opcional)</span></label>
-          <input id="new-group" name="group" type="text" list="group-options" autocomplete="off" maxlength="60" data-i18n-placeholder="participants.groupPlaceholder">
-        </div>
-        <button type="submit" class="btn btn-primary" data-i18n="participants.add">Añadir</button>
-        <p class="field-error" id="add-error" role="alert"></p>
-      </form>
-      <datalist id="group-options"></datalist>
+      <div class="card-body" id="participants-body">
+        <form id="add-participant-form" class="form-row" novalidate>
+          <div class="field">
+            <label for="new-name" data-i18n="participants.name">Nombre</label>
+            <input id="new-name" name="name" type="text" autocomplete="off" required maxlength="60" aria-describedby="add-error">
+          </div>
+          <div class="field">
+            <label for="new-group"><span data-i18n="participants.group">Grupo familiar</span> <span class="optional" data-i18n="common.optional">(opcional)</span></label>
+            <input id="new-group" name="group" type="text" list="group-options" autocomplete="off" maxlength="60" data-i18n-placeholder="participants.groupPlaceholder">
+          </div>
+          <button type="submit" class="btn btn-primary" data-i18n="participants.add">Añadir</button>
+          <p class="field-error" id="add-error" role="alert"></p>
+        </form>
+        <datalist id="group-options"></datalist>
 
-      <p id="participants-empty" class="empty" data-i18n="participants.empty"></p>
-      <ul id="participant-list" class="participant-list"></ul>
+        <p id="participants-empty" class="empty" data-i18n="participants.empty"></p>
+        <ul id="participant-list" class="participant-list"></ul>
 
-      <div class="toolbar">
-        <button type="button" class="btn" id="open-import" data-i18n="import.open">Importar lista</button>
-        <button type="button" class="btn" id="export-config" data-i18n="export.button">Exportar configuración</button>
-        <button type="button" class="btn btn-ghost-danger" id="clear-all" data-i18n="participants.clear">Vaciar todo</button>
+        <div class="toolbar">
+          <button type="button" class="btn" id="open-import" data-i18n="import.open">Importar lista</button>
+          <button type="button" class="btn" id="export-config" data-i18n="export.button">Exportar configuración</button>
+          <button type="button" class="btn btn-ghost-danger" id="clear-all" data-i18n="participants.clear">Vaciar todo</button>
+        </div>
       </div>
     </section>
 
     <!-- 2. Rules -->
     <section class="card" id="rules-section" aria-labelledby="rules-title">
       <div class="card-head">
-        <h2 id="rules-title"><span class="step" aria-hidden="true">2</span> <span data-i18n="rules.title">Reglas</span></h2>
+        <h2 id="rules-title">
+          <button type="button" class="section-toggle" aria-expanded="true" aria-controls="rules-body">
+            <span class="step" aria-hidden="true">2</span>
+            <span data-i18n="rules.title">Reglas</span>
+            <span class="chevron" aria-hidden="true"></span>
+          </button>
+        </h2>
+        <span class="badge" id="rules-badge"></span>
       </div>
 
-      <div class="switch-row">
-        <input type="checkbox" id="exclude-family" class="switch" role="switch">
-        <label for="exclude-family">
-          <strong data-i18n="rules.excludeFamily">Excluir familiares</strong>
-          <span class="hint" data-i18n="rules.excludeFamilyHint"></span>
-        </label>
-      </div>
-
-      <form id="exclusion-form" class="subcard" novalidate>
-        <h3 data-i18n="rules.exclusionTitle">Exclusión individual</h3>
-        <div class="form-grid">
-          <div class="field">
-            <label for="exclusion-from" data-i18n="rules.from">Quién</label>
-            <select id="exclusion-from" required></select>
-          </div>
-          <div class="field">
-            <label for="exclusion-to" data-i18n="rules.to">No puede regalar a</label>
-            <select id="exclusion-to" required></select>
-          </div>
-          <div class="field">
-            <label for="exclusion-direction" data-i18n="rules.direction">Sentido</label>
-            <select id="exclusion-direction">
-              <option value="one" data-i18n="rules.oneWay">Solo en ese sentido</option>
-              <option value="both" data-i18n="rules.bothWays">En ambos sentidos</option>
-            </select>
-          </div>
+      <div class="card-body" id="rules-body">
+        <div class="switch-row">
+          <input type="checkbox" id="exclude-family" class="switch" role="switch">
+          <label for="exclude-family">
+            <strong data-i18n="rules.excludeFamily">Excluir familiares</strong>
+            <span class="hint" data-i18n="rules.excludeFamilyHint"></span>
+          </label>
         </div>
-        <button type="submit" class="btn" data-i18n="rules.addExclusion">Añadir exclusión</button>
-        <p class="field-error" id="exclusion-error" role="alert"></p>
-      </form>
 
-      <h3 data-i18n="rules.active">Reglas activas</h3>
-      <ul id="rules-list" class="rules-list"></ul>
+        <form id="exclusion-form" class="subcard" novalidate>
+          <h3 data-i18n="rules.exclusionTitle">Exclusión individual</h3>
+          <div class="exclusion-grid">
+            <div class="field">
+              <label for="exclusion-from" data-i18n="rules.from">Quién</label>
+              <select id="exclusion-from" required></select>
+            </div>
+            <div class="field">
+              <label for="exclusion-to" data-i18n="rules.to">No puede regalar a</label>
+              <select id="exclusion-to" required></select>
+            </div>
+            <div class="field">
+              <label for="exclusion-direction" data-i18n="rules.direction">Sentido</label>
+              <select id="exclusion-direction">
+                <option value="one" data-i18n="rules.oneWay">Solo en ese sentido</option>
+                <option value="both" data-i18n="rules.bothWays">En ambos sentidos</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary" data-i18n="rules.addExclusion">Añadir exclusión</button>
+            <p class="field-error" id="exclusion-error" role="alert"></p>
+          </div>
+        </form>
 
-      <div id="feasibility" class="status" role="status" aria-live="polite"></div>
+        <h3 data-i18n="rules.active">Reglas activas</h3>
+        <ul id="rules-list" class="rules-list"></ul>
+
+        <div id="feasibility" class="status" role="status" aria-live="polite"></div>
+      </div>
     </section>
 
     <!-- 3. Probabilities -->
-    <section class="card" id="prob-section" aria-labelledby="prob-title">
+    <section class="card span-all" id="prob-section" aria-labelledby="prob-title">
       <div class="card-head">
-        <h2 id="prob-title"><span class="step" aria-hidden="true">3</span> <span data-i18n="prob.title">Probabilidades</span></h2>
-      </div>
-      <div class="switch-row">
-        <input type="checkbox" id="show-probabilities" class="switch" role="switch" aria-controls="prob-content">
-        <label for="show-probabilities">
-          <strong data-i18n="prob.toggle">Mostrar probabilidades</strong>
-          <span class="hint" data-i18n="prob.toggleHint"></span>
-        </label>
+        <h2 id="prob-title">
+          <button type="button" class="section-toggle" aria-expanded="true" aria-controls="prob-body-wrap">
+            <span class="step" aria-hidden="true">3</span>
+            <span data-i18n="prob.title">Probabilidades</span>
+            <span class="chevron" aria-hidden="true"></span>
+          </button>
+        </h2>
       </div>
 
-      <div id="prob-content" hidden>
-        <p id="prob-summary" class="prob-summary" aria-live="polite"></p>
-        <div id="prob-body">
-          <div class="field field-inline">
-            <label for="prob-person" data-i18n="prob.person">Persona</label>
-            <select id="prob-person"></select>
-          </div>
-          <div class="prob-lists">
-            <div class="subcard">
-              <h3 id="prob-gives-title"></h3>
-              <ol id="prob-gives" class="bar-list"></ol>
+      <div class="card-body" id="prob-body-wrap">
+        <div class="switch-row">
+          <input type="checkbox" id="show-probabilities" class="switch" role="switch" aria-controls="prob-content">
+          <label for="show-probabilities">
+            <strong data-i18n="prob.toggle">Mostrar probabilidades</strong>
+            <span class="hint" data-i18n="prob.toggleHint"></span>
+          </label>
+        </div>
+
+        <div id="prob-content" hidden>
+          <p id="prob-summary" class="prob-summary" aria-live="polite"></p>
+          <div id="prob-body" class="prob-layout">
+            <div class="prob-person">
+              <div class="field field-inline">
+                <label for="prob-person" data-i18n="prob.person">Persona</label>
+                <select id="prob-person"></select>
+              </div>
+              <div class="prob-lists">
+                <div class="subcard">
+                  <h3 id="prob-gives-title"></h3>
+                  <ol id="prob-gives" class="bar-list"></ol>
+                </div>
+                <div class="subcard">
+                  <h3 id="prob-receives-title"></h3>
+                  <ol id="prob-receives" class="bar-list"></ol>
+                </div>
+              </div>
             </div>
-            <div class="subcard">
-              <h3 id="prob-receives-title"></h3>
-              <ol id="prob-receives" class="bar-list"></ol>
+            <div class="prob-matrix">
+              <h3 data-i18n="prob.matrix">Matriz: quién regala a quién</h3>
+              <p class="hint" data-i18n="prob.matrixHint"></p>
+              <div class="heatmap-wrap" tabindex="0" role="region" data-i18n-aria="prob.matrix">
+                <table id="heatmap" class="heatmap"></table>
+              </div>
             </div>
-          </div>
-          <h3 data-i18n="prob.matrix">Matriz: quién regala a quién</h3>
-          <p class="hint" data-i18n="prob.matrixHint"></p>
-          <div class="heatmap-wrap" tabindex="0" role="region" data-i18n-aria="prob.matrix">
-            <table id="heatmap" class="heatmap"></table>
           </div>
         </div>
       </div>
     </section>
 
     <!-- 4. Draw -->
-    <section class="card" id="draw-section" aria-labelledby="draw-title">
+    <section class="card span-all" id="draw-section" aria-labelledby="draw-title">
       <div class="card-head">
-        <h2 id="draw-title"><span class="step" aria-hidden="true">4</span> <span data-i18n="draw.title">Sorteo</span></h2>
+        <h2 id="draw-title">
+          <button type="button" class="section-toggle" aria-expanded="true" aria-controls="draw-body">
+            <span class="step" aria-hidden="true">4</span>
+            <span data-i18n="draw.title">Sorteo</span>
+            <span class="chevron" aria-hidden="true"></span>
+          </button>
+        </h2>
+        <span class="badge" id="draw-badge"></span>
       </div>
 
-      <div id="draw-idle">
-        <p data-i18n="draw.intro"></p>
-        <button type="button" id="do-draw" class="btn btn-primary btn-large" data-i18n="draw.button">Realizar sorteo</button>
-        <p id="draw-blocked" class="hint" role="status"></p>
-      </div>
-
-      <div id="draw-done" hidden>
-        <div class="status status-ok">
-          <strong data-i18n="draw.doneTitle">Sorteo realizado</strong>
-          <span id="draw-done-text"></span>
-        </div>
-        <p id="draw-stale" class="status status-warn" hidden></p>
-
-        <div class="tabs" role="tablist" data-i18n-aria="draw.deliveryMode">
-          <button type="button" role="tab" id="tab-links" class="tab" aria-selected="true" aria-controls="panel-links" data-i18n="draw.tabLinks">Enviar enlaces</button>
-          <button type="button" role="tab" id="tab-inperson" class="tab" aria-selected="false" aria-controls="panel-inperson" tabindex="-1" data-i18n="draw.tabInPerson">Presencial</button>
+      <div class="card-body" id="draw-body">
+        <div id="draw-idle">
+          <p data-i18n="draw.intro"></p>
+          <button type="button" id="do-draw" class="btn btn-primary btn-large" data-i18n="draw.button">Realizar sorteo</button>
+          <p id="draw-blocked" class="hint" role="status"></p>
         </div>
 
-        <div id="panel-links" role="tabpanel" aria-labelledby="tab-links">
-          <p class="hint" data-i18n="draw.linksHint"></p>
-          <ul id="link-list" class="link-list"></ul>
-        </div>
-        <div id="panel-inperson" role="tabpanel" aria-labelledby="tab-inperson" hidden>
-          <p class="hint" data-i18n="draw.inPersonHint"></p>
-          <button type="button" id="start-inperson" class="btn btn-primary btn-large" data-i18n="draw.startInPerson">Empezar</button>
-        </div>
-
-        <details class="organizer">
-          <summary data-i18n="draw.organizerOptions">Opciones del organizador</summary>
-          <div class="toolbar">
-            <button type="button" id="reveal-all" class="btn" data-i18n="draw.revealAll">Revelar todos los resultados</button>
-            <button type="button" id="redo-draw" class="btn" data-i18n="draw.redo">Repetir sorteo</button>
-            <button type="button" id="discard-draw" class="btn btn-ghost-danger" data-i18n="draw.discard">Borrar sorteo</button>
+        <div id="draw-done" hidden>
+          <div class="status status-ok">
+            <strong data-i18n="draw.doneTitle">Sorteo realizado</strong>
+            <span id="draw-done-text"></span>
           </div>
-        </details>
+          <p id="draw-stale" class="status status-warn" hidden></p>
 
-        <div id="all-results" class="subcard" hidden>
-          <h3 data-i18n="draw.allResults">Todos los resultados</h3>
-          <ul id="all-results-list" class="results-list"></ul>
-          <button type="button" id="hide-all" class="btn" data-i18n="draw.hideAll">Ocultar resultados</button>
+          <div class="tabs" role="tablist" data-i18n-aria="draw.deliveryMode">
+            <button type="button" role="tab" id="tab-links" class="tab" aria-selected="true" aria-controls="panel-links" data-i18n="draw.tabLinks">Enviar enlaces</button>
+            <button type="button" role="tab" id="tab-inperson" class="tab" aria-selected="false" aria-controls="panel-inperson" tabindex="-1" data-i18n="draw.tabInPerson">Presencial</button>
+          </div>
+
+          <div id="panel-links" role="tabpanel" aria-labelledby="tab-links">
+            <p class="hint" data-i18n="draw.linksHint"></p>
+            <ul id="link-list" class="link-list"></ul>
+          </div>
+          <div id="panel-inperson" role="tabpanel" aria-labelledby="tab-inperson" hidden>
+            <p class="hint" data-i18n="draw.inPersonHint"></p>
+            <button type="button" id="start-inperson" class="btn btn-primary btn-large" data-i18n="draw.startInPerson">Empezar</button>
+          </div>
+
+          <details class="organizer" id="organizer-options">
+            <summary>
+              <span class="organizer-icon" aria-hidden="true">⚙</span>
+              <span class="organizer-text">
+                <strong data-i18n="draw.organizerOptions">Opciones del organizador</strong>
+                <span class="hint" data-i18n="draw.organizerHint"></span>
+              </span>
+              <span class="chevron" aria-hidden="true"></span>
+            </summary>
+            <div class="toolbar">
+              <button type="button" id="reveal-all" class="btn" data-i18n="draw.revealAll">Revelar todos los resultados</button>
+              <button type="button" id="redo-draw" class="btn" data-i18n="draw.redo">Repetir sorteo</button>
+              <button type="button" id="discard-draw" class="btn btn-ghost-danger" data-i18n="draw.discard">Borrar sorteo</button>
+            </div>
+          </details>
+
+          <div id="all-results" class="subcard" hidden>
+            <h3 data-i18n="draw.allResults">Todos los resultados</h3>
+            <ul id="all-results-list" class="results-list"></ul>
+            <button type="button" id="hide-all" class="btn" data-i18n="draw.hideAll">Ocultar resultados</button>
+          </div>
         </div>
       </div>
     </section>
@@ -243,27 +289,70 @@
   </dialog>
 
   <!-- In-person draw (pass the phone around) -->
-  <dialog id="inperson-dialog" class="dialog dialog-full" aria-labelledby="inperson-name">
+  <dialog id="inperson-dialog" class="dialog dialog-full" aria-labelledby="inperson-heading">
     <div class="inperson">
       <div class="inperson-top">
-        <span id="inperson-progress" class="badge"></span>
+        <div class="inperson-progress">
+          <span id="inperson-progress-text" class="inperson-progress-text"></span>
+          <span class="progress-track" aria-hidden="true"><span id="inperson-progress-bar" class="progress-bar"></span></span>
+        </div>
         <button type="button" id="inperson-exit" class="btn btn-ghost" data-i18n="inperson.exit">Salir</button>
       </div>
-      <div id="inperson-turn" class="inperson-stage">
-        <p class="eyebrow" data-i18n="inperson.turnOf">Turno de</p>
-        <h2 id="inperson-name" class="big-name"></h2>
-        <p id="inperson-instructions" class="hint"></p>
-        <button type="button" id="inperson-reveal" class="btn btn-primary btn-large"></button>
+
+      <h2 id="inperson-heading" class="visually-hidden" data-i18n="draw.tabInPerson">Presencial</h2>
+
+      <!-- How it works -->
+      <div id="inperson-intro" class="inperson-stage">
+        <p class="stage-icon" aria-hidden="true">📱</p>
+        <h3 class="stage-title" data-i18n="inperson.introTitle">Cómo funciona</h3>
+        <ol class="how-steps">
+          <li data-i18n-html="inperson.introStep1"></li>
+          <li data-i18n-html="inperson.introStep2"></li>
+          <li data-i18n-html="inperson.introStep3"></li>
+          <li data-i18n-html="inperson.introStep4"></li>
+        </ol>
+        <button type="button" id="inperson-begin" class="btn btn-primary btn-large" data-i18n="inperson.begin">Empezar</button>
       </div>
-      <div id="inperson-result" class="inperson-stage" hidden>
+
+      <!-- Step 1: hand the phone over, then hold to reveal -->
+      <div id="inperson-turn" class="inperson-stage stage-pass">
+        <p class="step-pill" data-i18n="inperson.step1">Paso 1 de 2 · Pasar el móvil</p>
+        <p class="stage-icon" aria-hidden="true">📱➜🙋</p>
+        <p class="eyebrow" data-i18n="inperson.passTo">Pasa el móvil a</p>
+        <p id="inperson-name" class="big-name"></p>
+        <p id="inperson-instructions" class="stage-text"></p>
+        <button type="button" id="inperson-reveal" class="btn btn-primary btn-large hold-btn">
+          <span class="hold-fill" aria-hidden="true"></span>
+          <span class="hold-label" id="inperson-reveal-label"></span>
+        </button>
+        <p class="hint" data-i18n="inperson.holdHint">Mantén pulsado hasta que se llene la barra.</p>
+      </div>
+
+      <!-- Step 2: secret result -->
+      <div id="inperson-result" class="inperson-stage stage-secret">
+        <p class="step-pill step-pill-secret" data-i18n="inperson.step2">Paso 2 de 2 · Memorizar y ocultar</p>
+        <p id="inperson-secret-banner" class="secret-banner"></p>
         <p id="inperson-result-label" class="eyebrow"></p>
         <p id="inperson-receiver" class="big-name reveal-pop"></p>
-        <p class="hint" data-i18n="inperson.memorize"></p>
+        <p id="inperson-memorize" class="stage-text"></p>
         <button type="button" id="inperson-hide" class="btn btn-primary btn-large"></button>
       </div>
-      <div id="inperson-done" class="inperson-stage" hidden>
-        <p class="done-icon" aria-hidden="true">🎁</p>
-        <h2 data-i18n="inperson.doneTitle">¡Todos tienen su amigo invisible!</h2>
+
+      <!-- Exit confirmation (inside the in-person view) -->
+      <div id="inperson-exit-confirm" class="inperson-stage">
+        <p class="stage-icon" aria-hidden="true">⏸</p>
+        <h3 class="stage-title" data-i18n="inperson.exitTitle">¿Salir del sorteo presencial?</h3>
+        <p class="stage-text" data-i18n="inperson.exitMessage"></p>
+        <div class="stage-actions">
+          <button type="button" id="inperson-exit-cancel" class="btn btn-primary btn-large" data-i18n="inperson.exitCancel">Seguir con el sorteo</button>
+          <button type="button" id="inperson-exit-ok" class="btn btn-large btn-ghost-danger" data-i18n="inperson.exit">Salir</button>
+        </div>
+      </div>
+
+      <!-- Finished -->
+      <div id="inperson-done" class="inperson-stage">
+        <p class="stage-icon" aria-hidden="true">🎁</p>
+        <h3 class="stage-title" data-i18n="inperson.doneTitle">¡Todos tienen su amigo invisible!</h3>
         <button type="button" id="inperson-close" class="btn btn-primary btn-large" data-i18n="inperson.finish">Terminar</button>
       </div>
     </div>

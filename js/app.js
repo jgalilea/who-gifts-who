@@ -13,6 +13,7 @@ import { createRulesView } from './ui/rules-view.js';
 import { createProbabilitiesView } from './ui/probabilities-view.js';
 import { createDrawView } from './ui/draw-view.js';
 import { createInPersonView } from './ui/inperson-view.js';
+import { initSections } from './ui/sections.js';
 
 /** Data derived from participants + rules, shared by every view. */
 function derive({ participants, rules }) {
@@ -23,6 +24,7 @@ function derive({ participants, rules }) {
 function init() {
   setLanguage(detectLanguage(loadString(STORAGE_KEYS.lang)));
   const store = createAppState();
+  const sections = initSections();
 
   const importView = createImportView({ store });
   const inPersonView = createInPersonView();
@@ -31,7 +33,7 @@ function init() {
     createParticipantsView({ store, openImport: importView.open }),
     rulesView,
     createProbabilitiesView({ store }),
-    createDrawView({ store, openInPerson: inPersonView.open, reasonText: rulesView.reasonText }),
+    createDrawView({ store, openInPerson: inPersonView.open, reasonText: rulesView.reasonText, sections }),
     importView,
   ];
 

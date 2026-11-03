@@ -4,6 +4,7 @@ export const STORAGE_KEYS = Object.freeze({
   draft: 'wgw:draft:v1',
   draw: 'wgw:draw:v1',
   lang: 'wgw:lang',
+  collapsed: 'wgw:collapsed',
 });
 
 export function loadJSON(key, fallback = null) {

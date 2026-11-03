@@ -45,6 +45,9 @@ export function createRulesView({ store }) {
     return t(`feasibility.${reason.code}`, p);
   }
 
+  const feasibilityBadge = (feasibility, count) =>
+    feasibility.ok ? t('rules.badge', { count }) : t('rules.badgeBlocked');
+
   function render(state, derived) {
     const { participants, rules } = state;
     const byId = new Map(participants.map((p) => [p.id, p.name]));
@@ -70,6 +73,9 @@ export function createRulesView({ store }) {
       items.push(ruleItem(text, () => actions.removeExclusion(e.id), t('rules.removeLabel', { rule: text })));
     }
     setChildren($('#rules-list'), items);
+    const badge = $('#rules-badge');
+    badge.textContent = feasibilityBadge(derived.feasibility, items.length);
+    badge.className = `badge ${derived.feasibility.ok ? 'badge-ok' : 'badge-error'}`;
 
     const status = $('#feasibility');
     const { feasibility } = derived;

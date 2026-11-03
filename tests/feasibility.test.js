@@ -5,15 +5,14 @@ import { buildAllowed } from '../js/core/rules.js';
 import { exactAnalysis } from '../js/core/matching.js';
 import { people, rulesWith } from './helpers.js';
 
-test('needs at least two participants', () => {
-  const ps = people(['Ana']);
-  const result = checkFeasibility(ps, rulesWith(ps));
-  assert.equal(result.ok, false);
-  assert.equal(result.reason.code, 'tooFew');
-});
-
-test('two people can gift each other', () => {
-  const ps = people(['Ana', 'Luis']);
+test('needs at least three participants (with two the result would be obvious)', () => {
+  for (const list of [['Ana'], ['Ana', 'Luis']]) {
+    const ps = people(list);
+    const result = checkFeasibility(ps, rulesWith(ps));
+    assert.equal(result.ok, false);
+    assert.equal(result.reason.code, 'tooFew');
+  }
+  const ps = people(['Ana', 'Luis', 'Eva']);
   assert.equal(checkFeasibility(ps, rulesWith(ps)).ok, true);
 });
 

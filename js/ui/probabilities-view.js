@@ -3,6 +3,7 @@
 import { $, h, setChildren, fillSelect, debounce } from './dom.js';
 import { t, formatPercent, formatCount, formatNumber } from '../i18n/index.js';
 import { analyze, EXACT_LIMIT } from '../core/matching.js';
+import { MIN_PARTICIPANTS } from '../core/feasibility.js';
 
 export function createProbabilitiesView({ store }) {
   const toggle = $('#show-probabilities');
@@ -44,7 +45,7 @@ export function createProbabilitiesView({ store }) {
     const summary = $('#prob-summary');
     if (!lastDerived.feasibility.ok || !analysis) {
       body.hidden = true;
-      summary.textContent = participants.length < 2 ? t('prob.needMore') : t('prob.none');
+      summary.textContent = participants.length < MIN_PARTICIPANTS ? t('prob.needMore') : t('prob.none');
       return;
     }
     if (analysis.signature !== lastDerived.signature) return; // a new computation is pending

@@ -4,7 +4,8 @@
 import { buildAllowed } from './rules.js';
 import { groupMembers } from './participants.js';
 
-export const MIN_PARTICIPANTS = 2;
+// With 2 people the result is obvious (each gifts the other), so 3 is the minimum.
+export const MIN_PARTICIPANTS = 3;
 
 /** Maximum bipartite matching. Returns { size, receiverOf, giverOf } (-1 = unmatched). */
 export function maximumMatching(allowed) {

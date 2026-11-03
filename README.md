@@ -14,12 +14,13 @@ The interface is available in **Spanish and English**, works on phones and deskt
   - *Exclude family members*: nobody gifts someone from their own family group.
   - Individual exclusions ("X cannot gift Y"), one way or both ways.
   - Active rules are listed clearly, and each one can be removed.
+- **At least 3 participants** are required (with 2, everyone would know who gifts them).
 - **Feasibility check**: before the draw, the app checks that at least one valid assignment exists. If none does, it explains why in plain language (e.g. *"Familia García has 5 of 8 people; with family exclusion they can only gift the other 3 people, so no combination is possible"*), and the draw button stays disabled.
 - **Exact probabilities** (hidden by default): a "who gifts whom" heat map, ranked lists of "you gift…" and "you are gifted by…" for each person, and the total number of valid combinations. They update in real time as participants or rules change.
 - **Uniform, secure draw**: every valid assignment is equally likely, so results match the probabilities shown. Randomness comes from `crypto.getRandomValues`. The results are **not shown** to the organizer.
 - **Delivery without a server**:
   - **Secret links**: one link per person, with the result encrypted (AES-GCM, Web Crypto API) inside the URL fragment (`#…`), which browsers never send to any server. Each person has a **WhatsApp** button, a **Share** button (Web Share API, where available) and a **Copy link** button.
-  - **In person**: the phone is passed from person to person. The app shows whose turn it is, that person taps to see their result, and then hides it before passing the phone on.
+  - **In person**: the phone is passed from person to person with guided steps. The app shows who to hand the phone to; that person **presses and holds** to see their result (so an accidental double tap can never reveal the next person's result), memorises it, and hides it before passing the phone on.
   - **Reveal all**: an organizer option, behind an explicit confirmation, for when someone loses their link.
 
 ## Publishing on GitHub Pages (step by step)

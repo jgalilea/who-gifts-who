@@ -22,7 +22,7 @@ export async function createDraw(participants, rules) {
   return { ...draw, tokens };
 }
 
-export function createDrawView({ store, openInPerson, reasonText }) {
+export function createDrawView({ store, openInPerson, reasonText, sections }) {
   const { actions } = store;
   const drawBtn = $('#do-draw');
   const allResults = $('#all-results');
@@ -36,6 +36,7 @@ export function createDrawView({ store, openInPerson, reasonText }) {
       actions.setDraw(await createDraw(participants, rules));
       allResults.hidden = true;
       toast(t('draw.doneToast'));
+      sections.expand('draw-body');
       $('#draw-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (error) {
       console.error(error);
@@ -148,6 +149,8 @@ export function createDrawView({ store, openInPerson, reasonText }) {
     const { draw } = state;
     $('#draw-idle').hidden = !!draw;
     $('#draw-done').hidden = !draw;
+    $('#draw-badge').textContent = draw ? t('draw.badgeDone') : derived.feasibility.ok ? t('draw.badgeReady') : t('draw.badgeBlocked');
+    $('#draw-badge').className = `badge ${draw ? 'badge-ok' : derived.feasibility.ok ? '' : 'badge-error'}`;
 
     drawBtn.disabled = !derived.feasibility.ok;
     $('#draw-blocked').textContent = derived.feasibility.ok ? '' : reasonText(derived.feasibility.reason);
