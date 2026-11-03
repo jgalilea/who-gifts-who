@@ -7,8 +7,55 @@
   <meta name="description" content="Who Gifts Who (WGW): Secret Santa draws with family rules, exact probabilities and secret links. 100% in your browser.">
   <meta name="referrer" content="no-referrer">
   <meta name="theme-color" content="#b3243b">
+  <!-- Link previews (WhatsApp, Telegram…) need an absolute image URL. Update it if you fork the repo. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Who Gifts Who">
+  <meta property="og:title" content="Who Gifts Who · Amigo invisible">
+  <meta property="og:description" content="Organiza tu amigo invisible con reglas de familia y enlaces secretos. Secret Santa made simple.">
+  <meta property="og:image" content="https://jgalilea.github.io/who-gifts-who/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Who Gifts Who: un regalo con un lazo">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="css/styles.css">
+  <!-- Fetch the whole module graph in parallel instead of discovering it import by import. -->
+  <link rel="modulepreload" href="js/state.js">
+  <link rel="modulepreload" href="js/storage.js">
+  <link rel="modulepreload" href="js/compute.js">
+  <link rel="modulepreload" href="js/compute-tasks.js">
+  <link rel="modulepreload" href="js/core/participants.js">
+  <link rel="modulepreload" href="js/core/rules.js">
+  <link rel="modulepreload" href="js/core/event.js">
+  <link rel="modulepreload" href="js/core/feasibility.js">
+  <link rel="modulepreload" href="js/core/matching.js">
+  <link rel="modulepreload" href="js/core/draw.js">
+  <link rel="modulepreload" href="js/core/crypto.js">
+  <link rel="modulepreload" href="js/core/importer.js">
+  <link rel="modulepreload" href="js/core/config.js">
+  <link rel="modulepreload" href="js/core/random.js">
+  <link rel="modulepreload" href="js/i18n/index.js">
+  <link rel="modulepreload" href="js/i18n/es.js">
+  <link rel="modulepreload" href="js/i18n/en.js">
+  <link rel="modulepreload" href="js/ui/dom.js">
+  <link rel="modulepreload" href="js/ui/feedback.js">
+  <link rel="modulepreload" href="js/ui/share.js">
+  <link rel="modulepreload" href="js/ui/icons.js">
+  <link rel="modulepreload" href="js/ui/sections.js">
+  <link rel="modulepreload" href="js/ui/event-view.js">
+  <link rel="modulepreload" href="js/ui/participants-view.js">
+  <link rel="modulepreload" href="js/ui/import-view.js">
+  <link rel="modulepreload" href="js/ui/rules-view.js">
+  <link rel="modulepreload" href="js/ui/probabilities-view.js">
+  <link rel="modulepreload" href="js/ui/draw-view.js">
+  <link rel="modulepreload" href="js/ui/inperson-view.js">
+  <link rel="modulepreload" href="js/ui/history-view.js">
+  <link rel="modulepreload" href="js/ui/help-view.js">
+  <link rel="modulepreload" href="js/core/history.js">
+  <link rel="modulepreload" href="js/core/config-constants.js">
   <script type="module" src="js/app.js"></script>
 </head>
 <body>
@@ -22,19 +69,56 @@
         <p class="tagline" data-i18n="app.tagline">Amigo invisible sin complicaciones</p>
       </div>
     </div>
-    <div class="lang-switch" role="group" data-i18n-aria="app.language">
-      <button type="button" class="lang-btn" data-lang="es" lang="es">ES</button>
-      <button type="button" class="lang-btn" data-lang="en" lang="en">EN</button>
+    <div class="header-actions">
+      <button type="button" id="open-help" class="btn help-btn" aria-haspopup="dialog">
+        <span class="help-icon" aria-hidden="true">?</span>
+        <span class="help-label" data-i18n="help.button">Ayuda</span>
+      </button>
+      <div class="lang-switch" role="group" data-i18n-aria="app.language">
+        <button type="button" class="lang-btn" data-lang="es" lang="es">ES</button>
+        <button type="button" class="lang-btn" data-lang="en" lang="en">EN</button>
+      </div>
     </div>
   </header>
 
   <main id="main" class="container layout">
+    <!-- 1. Event -->
+    <section class="card span-all" id="event-section" aria-labelledby="event-title">
+      <div class="card-head">
+        <h2 id="event-title">
+          <button type="button" class="section-toggle" aria-expanded="true" aria-controls="event-body">
+            <span class="step" aria-hidden="true">1</span>
+            <span data-i18n="event.title">Evento</span>
+            <span class="chevron" aria-hidden="true"></span>
+          </button>
+        </h2>
+        <span class="badge" id="event-badge"></span>
+      </div>
+      <div class="card-body" id="event-body">
+        <p class="hint" data-i18n="event.hint"></p>
+        <div class="event-grid">
+          <div class="field">
+            <label for="event-name"><span data-i18n="event.name">Nombre del evento</span> <span class="optional" data-i18n="common.optional">(opcional)</span></label>
+            <input id="event-name" type="text" maxlength="60" autocomplete="off" data-i18n-placeholder="event.namePlaceholder">
+          </div>
+          <div class="field">
+            <label for="event-date"><span data-i18n="event.date">Fecha</span> <span class="optional" data-i18n="common.optional">(opcional)</span></label>
+            <input id="event-date" type="date">
+          </div>
+          <div class="field">
+            <label for="event-budget"><span data-i18n="event.budget">Presupuesto</span> <span class="optional" data-i18n="common.optional">(opcional)</span></label>
+            <input id="event-budget" type="text" maxlength="30" autocomplete="off" data-i18n-placeholder="event.budgetPlaceholder">
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- 1. Participants -->
     <section class="card" id="participants-section" aria-labelledby="participants-title">
       <div class="card-head">
         <h2 id="participants-title">
           <button type="button" class="section-toggle" aria-expanded="true" aria-controls="participants-body">
-            <span class="step" aria-hidden="true">1</span>
+            <span class="step" aria-hidden="true">2</span>
             <span data-i18n="participants.title">Participantes</span>
             <span class="chevron" aria-hidden="true"></span>
           </button>
@@ -43,7 +127,7 @@
       </div>
 
       <div class="card-body" id="participants-body">
-        <form id="add-participant-form" class="form-row" novalidate>
+        <form id="add-participant-form" class="participant-form" novalidate>
           <div class="field">
             <label for="new-name" data-i18n="participants.name">Nombre</label>
             <input id="new-name" name="name" type="text" autocomplete="off" required maxlength="60" aria-describedby="add-error">
@@ -52,7 +136,12 @@
             <label for="new-group"><span data-i18n="participants.group">Grupo familiar</span> <span class="optional" data-i18n="common.optional">(opcional)</span></label>
             <input id="new-group" name="group" type="text" list="group-options" autocomplete="off" maxlength="60" data-i18n-placeholder="participants.groupPlaceholder">
           </div>
+          <div class="field">
+            <label for="new-phone"><span data-i18n="participants.phone">Teléfono</span> <span class="optional" data-i18n="common.optional">(opcional)</span></label>
+            <input id="new-phone" name="phone" type="tel" inputmode="tel" autocomplete="off" maxlength="25" data-i18n-placeholder="participants.phonePlaceholder" aria-describedby="phone-hint">
+          </div>
           <button type="submit" class="btn btn-primary"><span data-i18n="participants.add">Añadir</span></button>
+          <p class="hint field-hint" id="phone-hint" data-i18n="participants.phoneHint"></p>
           <p class="field-error" id="add-error" role="alert"></p>
         </form>
         <datalist id="group-options"></datalist>
@@ -73,7 +162,7 @@
       <div class="card-head">
         <h2 id="rules-title">
           <button type="button" class="section-toggle" aria-expanded="true" aria-controls="rules-body">
-            <span class="step" aria-hidden="true">2</span>
+            <span class="step" aria-hidden="true">3</span>
             <span data-i18n="rules.title">Reglas</span>
             <span class="chevron" aria-hidden="true"></span>
           </button>
@@ -95,11 +184,11 @@
           <div class="exclusion-grid">
             <div class="field">
               <label for="exclusion-from" data-i18n="rules.from">Quién</label>
-              <select id="exclusion-from" required></select>
+              <select id="exclusion-from" required aria-describedby="exclusion-error"></select>
             </div>
             <div class="field">
               <label for="exclusion-to" data-i18n="rules.to">No puede regalar a</label>
-              <select id="exclusion-to" required></select>
+              <select id="exclusion-to" required aria-describedby="exclusion-error"></select>
             </div>
             <div class="field">
               <label for="exclusion-direction" data-i18n="rules.direction">Sentido</label>
@@ -113,6 +202,15 @@
           </div>
         </form>
 
+        <div class="subcard">
+          <h3 data-i18n="history.title">Sorteos anteriores</h3>
+          <p class="hint" data-i18n="history.hint"></p>
+          <div class="toolbar">
+            <button type="button" id="import-history" class="btn" data-i18n="history.import">Importar sorteos anteriores</button>
+            <button type="button" id="export-history" class="btn" data-i18n="history.export">Exportar sorteos</button>
+          </div>
+        </div>
+
         <h3><span data-i18n="rules.active">Reglas activas</span></h3>
         <ul id="rules-list" class="rules-list"></ul>
 
@@ -125,7 +223,7 @@
       <div class="card-head">
         <h2 id="prob-title">
           <button type="button" class="section-toggle" aria-expanded="true" aria-controls="prob-body-wrap">
-            <span class="step" aria-hidden="true">3</span>
+            <span class="step" aria-hidden="true">4</span>
             <span data-i18n="prob.title">Probabilidades</span>
             <span class="chevron" aria-hidden="true"></span>
           </button>
@@ -177,7 +275,7 @@
       <div class="card-head">
         <h2 id="draw-title">
           <button type="button" class="section-toggle" aria-expanded="true" aria-controls="draw-body">
-            <span class="step" aria-hidden="true">4</span>
+            <span class="step" aria-hidden="true">5</span>
             <span data-i18n="draw.title">Sorteo</span>
             <span class="chevron" aria-hidden="true"></span>
           </button>
@@ -196,6 +294,13 @@
           <div class="status status-ok">
             <strong data-i18n="draw.doneTitle">Sorteo realizado</strong>
             <span id="draw-done-text"></span>
+          </div>
+          <div class="draw-code">
+            <div>
+              <span class="draw-code-label" data-i18n="draw.codeLabel">Código del sorteo</span>
+              <strong id="draw-code" class="draw-code-value"></strong>
+            </div>
+            <p class="hint" data-i18n="draw.codeHint"></p>
           </div>
           <p id="draw-stale" class="status status-warn" hidden></p>
 
@@ -225,6 +330,8 @@
             <div class="toolbar">
               <button type="button" id="reveal-all" class="btn"><span data-i18n="draw.revealAll">Revelar todos los resultados</span></button>
               <button type="button" id="redo-draw" class="btn"><span data-i18n="draw.redo">Repetir sorteo</span></button>
+              <button type="button" id="export-draw" class="btn"><span data-i18n="history.exportDraw">Exportar sorteo</span></button>
+              <button type="button" id="next-draw" class="btn"><span data-i18n="draw.next">Nuevo sorteo sin repetir parejas</span></button>
               <button type="button" id="discard-draw" class="btn btn-ghost-danger"><span data-i18n="draw.discard">Borrar sorteo</span></button>
             </div>
           </details>
@@ -271,6 +378,65 @@
         <button type="button" class="btn btn-primary" id="import-confirm" disabled><span id="import-confirm-label">Importar</span></button>
       </div>
     </form>
+  </dialog>
+
+  <!-- Import previous draws -->
+  <dialog id="history-import-dialog" class="dialog dialog-wide" aria-labelledby="history-import-title">
+    <form method="dialog" class="dialog-inner" novalidate>
+      <h2 id="history-import-title" data-i18n="history.importTitle">Importar sorteos anteriores</h2>
+      <p class="hint" data-i18n-html="history.importHelp"></p>
+      <div class="field">
+        <span class="label" data-i18n="import.file">Archivo</span>
+        <label class="btn file-btn">
+          <input type="file" id="history-file" accept=".json,.txt,.csv,application/json,text/plain,text/csv" class="visually-hidden">
+          <span data-i18n="import.chooseFile">Elegir archivo…</span>
+        </label>
+        <span id="history-file-name" class="hint"></span>
+      </div>
+      <div class="field">
+        <label for="history-text" data-i18n="history.paste">…o pega aquí los enlaces o las parejas</label>
+        <textarea id="history-text" rows="6" spellcheck="false" data-i18n-placeholder="history.placeholder"></textarea>
+      </div>
+      <div class="field">
+        <label for="history-label"><span data-i18n="history.label">Nombre del sorteo</span> <span class="optional" data-i18n="common.optional">(opcional)</span></label>
+        <input id="history-label" type="text" maxlength="60" autocomplete="off" data-i18n-placeholder="history.labelPlaceholder" aria-describedby="history-label-hint">
+        <span class="hint" id="history-label-hint" data-i18n="history.labelHint"></span>
+      </div>
+      <div id="history-preview" class="import-preview" aria-live="polite"></div>
+      <div class="dialog-actions">
+        <button type="button" class="btn" id="history-import-cancel"><span data-i18n="common.cancel">Cancelar</span></button>
+        <button type="button" class="btn btn-primary" id="history-import-confirm" disabled><span id="history-import-label">Importar</span></button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Export draws -->
+  <dialog id="history-export-dialog" class="dialog" aria-labelledby="history-export-title">
+    <form method="dialog" class="dialog-inner" novalidate>
+      <h2 id="history-export-title" data-i18n="history.exportTitle">Exportar sorteos</h2>
+      <fieldset class="field radio-group">
+        <legend data-i18n="history.exportWhat">¿Qué quieres exportar?</legend>
+        <label><input type="radio" name="history-export" id="history-export-current" value="current"> <span id="history-export-current-label"></span></label>
+        <label><input type="radio" name="history-export" id="history-export-all" value="all"> <span id="history-export-all-label"></span></label>
+      </fieldset>
+      <p class="status status-warn" data-i18n="history.exportWarning"></p>
+      <div class="dialog-actions">
+        <button type="button" class="btn" id="history-export-cancel"><span data-i18n="common.cancel">Cancelar</span></button>
+        <button type="button" class="btn btn-primary" id="history-export-confirm"><span data-i18n="history.exportConfirm">Descargar</span></button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Help -->
+  <dialog id="help-dialog" class="dialog dialog-wide" aria-labelledby="help-title">
+    <div class="dialog-inner">
+      <div class="help-head">
+        <h2 id="help-title" data-i18n="help.title">Cómo funciona</h2>
+        <button type="button" id="help-close" class="btn" data-i18n="help.close">Cerrar</button>
+      </div>
+      <p class="hint" data-i18n="help.intro"></p>
+      <div id="help-body" class="help-body"></div>
+    </div>
   </dialog>
 
   <!-- Generic confirmation dialog -->
@@ -321,11 +487,11 @@
         <p class="eyebrow" data-i18n="inperson.passTo">Pasa el móvil a</p>
         <p id="inperson-name" class="big-name"></p>
         <p id="inperson-instructions" class="stage-text"></p>
-        <button type="button" id="inperson-reveal" class="btn btn-primary btn-large hold-btn">
+        <button type="button" id="inperson-reveal" class="btn btn-primary btn-large hold-btn" aria-describedby="inperson-hold-hint">
           <span class="hold-fill" aria-hidden="true"></span>
           <span class="hold-label"><span id="inperson-reveal-label"></span></span>
         </button>
-        <p class="hint" data-i18n="inperson.holdHint">Mantén pulsado hasta que se llene la barra.</p>
+        <p class="hint" id="inperson-hold-hint" data-i18n="inperson.holdHint">Mantén pulsado hasta que se llene la barra.</p>
       </div>
 
       <!-- Step 2: secret result -->

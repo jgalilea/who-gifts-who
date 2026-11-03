@@ -1,14 +1,18 @@
 // Parsing participant lists from .txt / .csv / .json files or pasted text.
 //
-// Text format: one participant per line, optional family group in a second column.
+// Text format: one participant per line, optional family group in a second column and
+// optional phone (with country code, for WhatsApp) in a third one.
 //   Ana
 //   Luis;Familia García
+//   Eva;;+34 600 123 456
 // Separators: ";" (recommended), tab or ",". Quotes are supported ("García, Ana";Familia).
 // Lines starting with "#" are comments. A header line such as "name;group" is skipped.
 //
 // JSON format: an array of names, an array of { name, group } objects, or a full
 // configuration exported by the app (see config.js and the README).
-import { cleanText, nameKey, MAX_NAME_LENGTH } from './participants.js';
+import { cleanText, nameKey, validatePhone, MAX_NAME_LENGTH } from './participants.js';
+import { sanitizeEvent } from './event.js';
+import { entriesFromJson } from './history.js';
 
 const HEADER_NAMES = new Set(['name', 'names', 'nombre', 'nombres', 'participant', 'participants', 'participante', 'participantes']);
 
@@ -55,12 +59,19 @@ function detectSeparator(line) {
   return null;
 }
 
-function makeRow(line, name, group) {
-  const row = { line, name: cleanText(name), group: cleanText(group), status: 'ok' };
+function makeRow(line, name, group, phone = '') {
+  const row = { line, name: cleanText(name), group: cleanText(group), phone: cleanText(phone), status: 'ok', warning: null };
   if (!row.name) row.status = 'empty';
   else if (row.name.length > MAX_NAME_LENGTH || row.group.length > MAX_NAME_LENGTH) row.status = 'tooLong';
+  else if (row.phone && validatePhone(row.phone)) {
+    // Keep the person, drop the unusable phone and tell the user.
+    row.warning = validatePhone(row.phone);
+    row.phone = '';
+  }
   return row;
 }
+
+const EMPTY_EXTRAS = { settings: null, exclusions: [], event: null, previousDraws: [] };
 
 function markDuplicates(rows) {
   const seen = new Set();
@@ -87,15 +98,15 @@ export function parseTextList(text) {
       return;
     }
     const separator = detectSeparator(raw);
-    const [name = '', group = ''] = separator ? splitLine(raw, separator) : [raw];
+    const [name = '', group = '', phone = ''] = separator ? splitLine(raw, separator) : [raw];
     if (!seenContent && HEADER_NAMES.has(nameKey(name))) {
       seenContent = true;
       return;
     }
     seenContent = true;
-    rows.push(makeRow(line, name, group));
+    rows.push(makeRow(line, name, group, phone));
   });
-  return { format: 'text', fatal: null, rows: markDuplicates(rows), settings: null, exclusions: [] };
+  return { format: 'text', fatal: null, rows: markDuplicates(rows), ...EMPTY_EXTRAS };
 }
 
 export function parseJsonList(text) {
@@ -103,16 +114,17 @@ export function parseJsonList(text) {
   try {
     data = JSON.parse(String(text).replace(/^﻿/, ''));
   } catch (error) {
-    return { format: 'json', fatal: { code: 'invalidJson', params: { detail: error.message } }, rows: [], settings: null, exclusions: [] };
+    return { format: 'json', fatal: { code: 'invalidJson', params: { detail: error.message } }, rows: [], ...EMPTY_EXTRAS };
   }
   const list = Array.isArray(data) ? data : data && Array.isArray(data.participants) ? data.participants : null;
   if (!list) {
-    return { format: 'json', fatal: { code: 'jsonShape', params: {} }, rows: [], settings: null, exclusions: [] };
+    return { format: 'json', fatal: { code: 'jsonShape', params: {} }, rows: [], ...EMPTY_EXTRAS };
   }
   const rows = list.map((item, i) => {
     if (typeof item === 'string') return makeRow(i + 1, item, '');
     if (item && typeof item === 'object' && typeof item.name === 'string') {
-      return makeRow(i + 1, item.name, typeof item.group === 'string' ? item.group : '');
+      const text = (key) => (typeof item[key] === 'string' ? item[key] : '');
+      return makeRow(i + 1, item.name, text('group'), text('phone'));
     }
     return { line: i + 1, name: '', group: '', status: 'invalid' };
   });
@@ -127,7 +139,10 @@ export function parseJsonList(text) {
           .filter((e) => e && typeof e.from === 'string' && typeof e.to === 'string')
           .map((e) => ({ from: cleanText(e.from), to: cleanText(e.to), mutual: !!e.mutual }))
       : [];
-  return { format: 'json', fatal: null, rows: markDuplicates(rows), settings, exclusions };
+  const full = !Array.isArray(data);
+  const event = full && data.event && typeof data.event === 'object' ? sanitizeEvent(data.event) : null;
+  const previousDraws = full ? entriesFromJson(data) : [];
+  return { format: 'json', fatal: null, rows: markDuplicates(rows), settings, exclusions, event, previousDraws };
 }
 
 export function parseImport(text, filename = '') {

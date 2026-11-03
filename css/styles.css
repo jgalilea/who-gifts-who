@@ -233,7 +233,7 @@ code {
 
 .lang-btn {
   min-width: var(--tap);
-  min-height: 38px;
+  min-height: 40px;
   border: 0;
   border-radius: 999px;
   background: transparent;
@@ -411,6 +411,8 @@ code {
 }
 
 input[type="text"],
+input[type="tel"],
+input[type="date"],
 select,
 textarea {
   width: 100%;
@@ -437,6 +439,8 @@ select {
 }
 
 input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="date"]:focus,
 select:focus,
 textarea:focus {
   border-color: var(--focus);
@@ -452,16 +456,112 @@ textarea {
   border-color: var(--danger) !important;
 }
 
-.form-row,
-.form-grid {
+
+.exclusion-grid,
+.participant-form,
+.event-grid {
   display: grid;
   gap: 0.75rem;
-  align-items: end;
 }
 
-.exclusion-grid {
+.participant-form .btn {
+  align-self: end;
+  order: 2; /* on phones the hint sits right under the phone field, before the button */
+}
+
+.participant-form .field-hint {
+  order: 1;
+}
+
+.participant-form .field-error {
+  order: 3;
+}
+
+.participant > .row-actions {
+  flex: none;
+  flex-wrap: nowrap;
+}
+
+.field-hint {
+  font-size: 0.8rem;
+  grid-column: 1 / -1;
+  margin: -0.25rem 0 0;
+}
+
+.participant-phone {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+#event-badge {
+  max-width: 55%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-detail {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.92rem;
+}
+
+.draw-code {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.draw-code .hint {
+  flex: 1 1 260px;
+  margin: 0;
+}
+
+.draw-code-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.draw-code-value {
+  font-size: 1.5rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 0.08em;
+  color: var(--primary);
+}
+
+.reveal-details {
   display: grid;
-  gap: 0.75rem;
+  gap: 0.5rem;
+  margin: 1.5rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  text-align: left;
+}
+
+.reveal-details .detail {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.reveal-details dt {
+  color: var(--muted);
+}
+
+.reveal-details dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+  overflow-wrap: anywhere;
 }
 
 .field-error {
@@ -710,7 +810,8 @@ input[type="checkbox"]:not(.switch) {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.25rem 0.5rem;
+  flex: 1;
   min-width: 0;
 }
 
@@ -1000,12 +1101,9 @@ input[type="checkbox"]:not(.switch) {
   min-width: 3.1rem;
   height: 2.3rem;
   text-align: center;
-  background: color-mix(in oklab, var(--heat) calc(var(--intensity, 0) * 100%), var(--surface));
-}
-
-.heatmap .cell.strong {
-  color: var(--primary-text);
-  font-weight: 700;
+  /* Capped at 55% so the (regular) text colour keeps ≥ 4.5:1 contrast in both themes. */
+  background: color-mix(in oklab, var(--heat) calc(var(--intensity, 0) * 55%), var(--surface));
+  font-weight: calc(400 + var(--intensity, 0) * 300);
 }
 
 .heatmap .cell.blocked {
@@ -1300,10 +1398,8 @@ input[type="checkbox"]:not(.switch) {
 /* ---------- Reveal page ---------- */
 .reveal-main {
   max-width: 560px;
-  min-height: calc(100dvh - 160px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  /* Top-aligned (not centred) so content added below never pushes the gift around. */
+  padding-top: clamp(8px, 6vh, 64px);
 }
 
 .reveal-card {
@@ -1451,17 +1547,7 @@ input[type="checkbox"]:not(.switch) {
     padding: 24px;
   }
 
-  .form-row {
-    grid-template-columns: 1fr 1fr auto;
-  }
 
-  .form-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .participant.editing .form-row {
-    grid-template-columns: 1fr 1fr auto;
-  }
 
   .prob-lists {
     grid-template-columns: 1fr 1fr;
@@ -1492,10 +1578,25 @@ input[type="checkbox"]:not(.switch) {
 }
 
 @media (min-width: 640px) {
-  /* 2×2: who / cannot gift, then direction / add button */
-  .exclusion-grid {
+  /* 2×2: who / cannot gift, then direction / add button (same pattern for participants) */
+  .exclusion-grid,
+  .participant-form {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: end;
+    align-items: start;
+  }
+
+  .exclusion-grid .btn {
+    align-self: end;
+  }
+
+  /* 2×2 grid: the hint goes on its own row below */
+  .participant-form .btn,
+  .participant-form .field-hint {
+    order: 0;
+  }
+
+  .event-grid {
+    grid-template-columns: 2fr 1fr 1fr;
   }
 }
 
@@ -1557,4 +1658,154 @@ input[type="checkbox"]:not(.switch) {
 
 .btn-icon .icon {
   font-size: 1.1rem;
+}
+
+/* ---------- Header actions & help ---------- */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: none;
+}
+
+.help-btn {
+  min-height: 40px;
+  padding: 0.35rem 0.85rem 0.35rem 0.4rem;
+  border-radius: 999px;
+}
+
+.help-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--primary-text);
+  font-weight: 800;
+}
+
+.help-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  position: sticky;
+  top: -20px; /* stays visible while scrolling long topics */
+  margin: -20px -16px 0;
+  padding: 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  z-index: 1;
+}
+
+@media (min-width: 640px) {
+  .help-head {
+    top: -24px;
+    margin: -24px -24px 0;
+    padding: 16px 24px;
+  }
+}
+
+.help-head h2 {
+  margin: 0;
+}
+
+.help-body {
+  margin-top: 0.5rem;
+}
+
+.help-topic {
+  border-bottom: 1px solid var(--border);
+}
+
+.help-topic summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: var(--tap);
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+
+.help-topic summary::-webkit-details-marker {
+  display: none;
+}
+
+.help-topic summary::after {
+  content: "";
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-right: 2.5px solid var(--muted);
+  border-bottom: 2.5px solid var(--muted);
+  transform: rotate(45deg) translate(-2px, -2px);
+  transition: transform 0.2s;
+}
+
+.help-topic[open] summary::after {
+  transform: rotate(-135deg) translate(-2px, -2px);
+}
+
+.help-content {
+  padding: 0 0 1rem;
+}
+
+.help-content p,
+.help-content ul,
+.help-content ol {
+  margin: 0 0 0.6rem;
+}
+
+.help-content ul,
+.help-content ol {
+  padding-left: 1.3rem;
+}
+
+.help-content li {
+  padding: 0.15rem 0;
+}
+
+/* ---------- Previous draws ---------- */
+.history-preview-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+}
+
+.history-preview-list li {
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.history-preview-list .chip {
+  margin-left: 0.5rem;
+}
+
+.history-unknown {
+  display: block;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 420px) {
+  /* Only the "?" on very narrow phones; the button keeps its accessible name. */
+  .help-label {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .help-btn {
+    padding: 0.35rem;
+    min-width: var(--tap);
+  }
+
+  .brand-title {
+    font-size: 1.15rem;
+  }
 }

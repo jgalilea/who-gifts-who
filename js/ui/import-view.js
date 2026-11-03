@@ -47,16 +47,22 @@ export function createImportView({ store }) {
     }
     const ok = preview.rows.filter((r) => r.status === 'ok');
     const issues = preview.rows.filter((r) => r.status !== 'ok');
+    const warnings = ok.filter((r) => r.warning);
+    const hasPhones = ok.some((r) => r.phone);
     const extras = [];
     if (preview.exclusions.length) extras.push(t('import.extraExclusions', { count: preview.exclusions.length }));
     if (preview.settings && preview.mode === 'replace' && preview.settings.excludeFamily) extras.push(t('import.extraFamily'));
-    if (preview.settings && preview.mode === 'add') extras.push(t('import.settingsIgnored'));
+    if (preview.event && preview.mode === 'replace') extras.push(t('import.extraEvent'));
+    if (preview.previousDraws.length && preview.mode === 'replace') extras.push(t('import.extraPrevious', { count: preview.previousDraws.length }));
+    if ((preview.settings || preview.event || preview.previousDraws.length) && preview.mode === 'add') extras.push(t('import.settingsIgnored'));
     confirmBtn.disabled = ok.length === 0;
 
     setChildren(
       previewEl,
       h('p', { class: `status ${ok.length ? 'status-ok' : 'status-warn'}` }, t('import.summary', { ok: ok.length, skipped: issues.length })),
-      issues.length ? h('ul', { class: 'issue-list' }, issues.map((r) => h('li', {}, rowIssue(r)))) : null,
+      issues.length || warnings.length
+        ? h('ul', { class: 'issue-list' }, issues.map((r) => h('li', {}, rowIssue(r))), warnings.map((r) => h('li', {}, t('import.issuePhone', { line: r.line, name: r.name }))))
+        : null,
       extras.map((text) => h('p', { class: 'hint' }, text)),
       ok.length
         ? h(
@@ -66,8 +72,14 @@ export function createImportView({ store }) {
               'table',
               { class: 'preview-table' },
               h('caption', { class: 'visually-hidden' }, t('import.previewCaption')),
-              h('thead', {}, h('tr', {}, h('th', { scope: 'col' }, t('participants.name')), h('th', { scope: 'col' }, t('participants.group')))),
-              h('tbody', {}, ok.map((r) => h('tr', {}, h('td', {}, r.name), h('td', {}, r.group || '—')))),
+              h('thead', {}, h('tr', {},
+                h('th', { scope: 'col' }, t('participants.name')),
+                h('th', { scope: 'col' }, t('participants.group')),
+                hasPhones ? h('th', { scope: 'col' }, t('participants.phone')) : null)),
+              h('tbody', {}, ok.map((r) => h('tr', {},
+                h('td', {}, r.name),
+                h('td', {}, r.group || '—'),
+                hasPhones ? h('td', {}, r.phone || '—') : null))),
             ),
           )
         : null,

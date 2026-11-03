@@ -3,7 +3,7 @@
 //
 // Stages: intro → (turn → result) × n → done. "exit" is an in-view confirmation.
 // Revealing requires press-and-hold so a double tap on "hide" can never reveal the next
-// person's result to the wrong person.
+// person's result to the wrong person (assistive technologies get a plain activation).
 import { $ } from './dom.js';
 import { t } from '../i18n/index.js';
 
@@ -94,7 +94,13 @@ export function createInPersonView() {
   revealBtn.addEventListener('keydown', startHold);
   ['pointerup', 'pointercancel', 'lostpointercapture', 'keyup', 'blur'].forEach((type) => revealBtn.addEventListener(type, cancelHold));
   revealBtn.addEventListener('contextmenu', (event) => event.preventDefault()); // long-press menu on mobile
-  revealBtn.addEventListener('click', (event) => event.preventDefault());
+  revealBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    // Screen readers (NVDA, JAWS, VoiceOver on desktop) activate with a synthetic click
+    // (detail === 0) and cannot "hold". Real taps and mouse clicks have detail ≥ 1, so an
+    // accidental double tap still can't reveal anything.
+    if (event.detail === 0 && phase === 'turn' && !holdTimer) go('result');
+  });
 
   // ----- Navigation -----
   $('#inperson-begin').addEventListener('click', () => go('turn'));

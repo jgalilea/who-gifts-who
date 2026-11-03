@@ -2,6 +2,7 @@
 // Add a language by creating a dictionary file and registering it in DICTIONARIES.
 import es from './es.js';
 import en from './en.js';
+import { parseEventDate } from '../core/event.js';
 
 const DICTIONARIES = { es, en };
 export const LANGUAGES = Object.keys(DICTIONARIES);
@@ -61,6 +62,13 @@ export function formatPercent(p) {
 
 export function formatNumber(n) {
   return new Intl.NumberFormat(locale()).format(n);
+}
+
+/** 'YYYY-MM-DD' → "martes, 24 de diciembre de 2026" / "Thursday, 24 December 2026". */
+export function formatEventDate(value) {
+  const date = parseEventDate(value);
+  if (!date) return '';
+  return new Intl.DateTimeFormat(locale(), { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(date);
 }
 
 /** Lists names naturally: "Ana, Luis y Eva" / "Ana, Luis and Eva". */

@@ -8,8 +8,30 @@
   <meta name="referrer" content="no-referrer">
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#b3243b">
+  <!-- Link preview card. The secret result lives after "#", which is never sent to any server or
+       link-preview crawler, so the preview can never reveal it. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Who Gifts Who">
+  <meta property="og:title" content="🎁 Tu amigo invisible te espera · Your Secret Santa awaits">
+  <meta property="og:description" content="Abre el enlace para descubrir a quién le regalas. Es secreto: no lo compartas.">
+  <meta property="og:image" content="https://jgalilea.github.io/who-gifts-who/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Who Gifts Who: un regalo con un lazo">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="modulepreload" href="js/core/crypto.js">
+  <link rel="modulepreload" href="js/core/event.js">
+  <link rel="modulepreload" href="js/core/participants.js">
+  <link rel="modulepreload" href="js/core/random.js">
+  <link rel="modulepreload" href="js/i18n/index.js">
+  <link rel="modulepreload" href="js/i18n/es.js">
+  <link rel="modulepreload" href="js/i18n/en.js">
+  <link rel="modulepreload" href="js/storage.js">
+  <link rel="modulepreload" href="js/ui/dom.js">
   <script type="module" src="js/reveal.js"></script>
 </head>
 <body class="reveal-page">
@@ -80,6 +102,9 @@
           <p class="hint" data-i18n="reveal.keepSecret">¡Shhh! Guarda el secreto 🤫</p>
         </div>
       </div>
+
+      <!-- Filled after decrypting. It sits at the bottom of the card, so adding it never moves the gift. -->
+      <dl id="reveal-details" class="reveal-details" hidden></dl>
     </div>
   </main>
 

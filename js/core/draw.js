@@ -7,9 +7,21 @@
 //   with symmetric swap / 3-cycle moves started from a valid matching (approximately uniform).
 // Never uses "if you draw yourself, draw again", which can dead-end and biases results.
 import { cryptoRng } from './random.js';
+
 import { EXACT_LIMIT, completionCounts } from './matching.js';
 import { findValidAssignment } from './feasibility.js';
 import { buildAllowed, configSignature } from './rules.js';
+
+// No 0/O, 1/I/L: easy to read aloud and to compare.
+const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+export const CODE_LENGTH = 4;
+
+/** Short code that identifies a draw, so people can tell links from different draws apart. */
+export function createDrawCode(rng = cryptoRng) {
+  let code = '';
+  for (let i = 0; i < CODE_LENGTH; i++) code += CODE_ALPHABET[rng.int(CODE_ALPHABET.length)];
+  return code;
+}
 
 const bitIndex = (bit) => 31 - Math.clz32(bit);
 
@@ -113,6 +125,7 @@ export function performDraw(participants, rules, rng = cryptoRng) {
   if (!result) throw new Error('NO_VALID_ASSIGNMENT');
   return {
     createdAt: new Date().toISOString(),
+    code: createDrawCode(rng),
     method: result.method,
     signature: configSignature(participants, rules),
     assignments: participants.map((giver, i) => {

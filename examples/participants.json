@@ -2,7 +2,7 @@
   "app": "who-gifts-who",
   "version": 1,
   "participants": [
-    { "name": "Ana", "group": "Familia García" },
+    { "name": "Ana", "group": "Familia García", "phone": "+34 600 123 456" },
     { "name": "Luis", "group": "Familia García" },
     { "name": "Carmen", "group": "Familia García" },
     { "name": "Pedro", "group": "Familia López" },
@@ -12,6 +12,7 @@
     { "name": "Sofía" }
   ],
   "settings": { "excludeFamily": true },
+  "event": { "name": "Navidad en familia 2026", "date": "2026-12-24", "budget": "30 €" },
   "exclusions": [
     { "from": "Marta", "to": "Javier", "mutual": true },
     { "from": "Sofía", "to": "Ana", "mutual": false }

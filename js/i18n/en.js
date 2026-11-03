@@ -38,11 +38,11 @@ export default {
 
   'import.open': 'Import list',
   'import.title': 'Import participants',
-  'import.help': 'Upload a <strong>.txt</strong> or <strong>.csv</strong> file with one name per line. To set a family group, add it after a semicolon: <code>Ana;The Smiths</code>. <strong>.json</strong> files exported from this app work too.',
+  'import.help': 'Upload a <strong>.txt</strong> or <strong>.csv</strong> file with one name per line. Optionally add the family group and phone number, separated by semicolons: <code>Ana;The Smiths;+44 7700 900123</code>. <strong>.json</strong> files exported from this app work too.',
   'import.file': 'File',
   'import.chooseFile': 'Choose file…',
   'import.paste': '…or paste the list here',
-  'import.placeholder': 'Ana;The Smiths\nLuis;The Smiths\nMarta',
+  'import.placeholder': 'Ana;The Smiths\nLuis;The Smiths;+44 7700 900123\nMarta',
   'import.mode': 'What should happen to the current list?',
   'import.modeAdd': 'Add to the current list',
   'import.modeReplace': 'Replace the current list (and its rules)',
@@ -123,7 +123,7 @@ export default {
   'draw.error': 'The draw could not be completed. Check the rules.',
   'draw.doneTitle': 'Draw complete.',
   'draw.doneText': ({ date, count }) => `${date} · ${count} people. Results are hidden: not even you can see them here.`,
-  'draw.stale': 'You changed participants or rules after the draw. The links show the previous result: run the draw again to apply the changes.',
+  'draw.stale': 'You changed participants, rules or event details after the draw. The generated links show the previous result and details: run the draw again to apply the changes.',
   'draw.deliveryMode': 'How to deliver the results',
   'draw.tabLinks': 'Send links',
   'draw.tabInPerson': 'In person',
@@ -141,7 +141,7 @@ export default {
   'draw.gives': 'gifts',
   'draw.redo': 'Run the draw again',
   'draw.redoTitle': 'Run the draw again?',
-  'draw.redoMessage': 'A new draw with new links will be created. Links you already sent will keep showing the previous result, so you will need to resend all of them.',
+  'draw.redoMessage': ({ code }) => `A new draw will be created, with new links and a new code (the current one is #${code}). Links already sent will still open and show the previous result with code #${code}: send the new ones and tell the group which code is valid.`,
   'draw.discard': 'Delete draw',
   'draw.discardTitle': 'Delete the draw?',
   'draw.discardMessage': 'The draw will be deleted from this device. Links already sent will keep working.',
@@ -155,8 +155,8 @@ export default {
   'share.copied': '{name}’s link copied',
   'share.copyError': 'Could not copy the link',
   'share.shareError': 'Could not share the link',
-  'share.message': '🎁 Hi {name}! The Secret Santa draw is done. Open your secret link to find out who you are gifting (don’t share it with anyone): {url}',
-  'share.shareText': '🎁 Hi {name}! Open your secret link to find out who you are gifting in the Secret Santa.',
+  'share.message': ({ name, url, event, code }) => `🎁 Hi ${name}! The Secret Santa draw${event ? ` “${event}”` : ''} is done${code ? ` (code #${code})` : ''}. Open your secret link to find out who you are gifting (don’t share it with anyone): ${url}`,
+  'share.shareText': ({ name, event }) => `🎁 Hi ${name}! Open your secret link to find out who you are gifting in the Secret Santa${event ? ` “${event}”` : ''}.`,
 
   'inperson.exit': 'Exit',
   'inperson.exitTitle': 'Leave the in-person reveal?',
@@ -200,4 +200,157 @@ export default {
   'reveal.youGift': 'You are gifting…',
   'reveal.keepSecret': 'Shhh! Keep it secret 🤫',
   'reveal.createOwn': 'Organize your own Secret Santa with Who Gifts Who',
+  'event.title': 'Event',
+  'event.hint': 'All optional. Shown in the message and on each participant’s page, next to their result.',
+  'event.name': 'Event name',
+  'event.namePlaceholder': 'e.g. Family Christmas 2026',
+  'event.date': 'Date',
+  'event.budget': 'Budget',
+  'event.budgetPlaceholder': 'e.g. £25',
+  'event.badgeEmpty': 'No details',
+  'participants.phone': 'Phone',
+  'participants.phonePlaceholder': '+44 7700 900123',
+  'participants.phoneHint': 'Include the country code. Used to open their WhatsApp chat directly.',
+  'errors.phoneInvalid': 'That phone number does not look valid. Include the country code, e.g. +44 7700 900123.',
+  'errors.phoneNoPrefix': 'Add the country code at the start, e.g. +44 7700 900123.',
+  'import.issuePhone': 'Line {line}: “{name}” has an invalid phone (missing country code?); they will be imported without it.',
+  'import.extraEvent': 'Event details will be imported.',
+  'import.extraPrevious': ({ count }) => `${count} previous ${plural(count, 'draw', 'draws')} will be imported so pairings are not repeated.`,
+  'feasibility.combinations': 'There are {count} possible combinations.',
+  'feasibility.fewCombinations': ({ count }) => count === 1 ? 'Only 1 combination is possible: the result is decided in advance. Add people or remove rules.' : `Only ${count} combinations are possible: anyone who knows their result can deduce the others. Add people or remove rules.`,
+  'draw.codeLabel': 'Draw code',
+  'draw.codeHint': 'Shown in the message and on every link page. If you run the draw again the code changes: tell the group which code is valid, so nobody trusts an old link.',
+  'draw.next': 'New draw without repeating pairs',
+  'draw.nextTitle': 'Prepare a new draw without repeating pairs?',
+  'draw.nextMessage': 'Meant for next year. This draw’s pairings are saved as a “previous draw” (without showing who gifted whom) and this draw is deleted from this device. Links already sent keep working. If you export the configuration, it is included in the file.',
+  'draw.nextDone': 'Done: the next draw will not repeat the previous pairings.',
+  'reveal.event': 'Event',
+  'reveal.date': 'Date',
+  'reveal.budget': 'Budget',
+  'reveal.code': 'Draw code',
+  'rules.previousRule': ({ draw, applies, total }) => `Do not repeat pairings of ${draw}` + (applies === total ? ` (${total} ${plural(total, 'pair', 'pairs')}).` : ` (${applies} of ${total} pairs apply to the current participants).`),
+  'history.title': 'Previous draws',
+  'history.hint': 'Avoid repeating pairings from previous years. Pairs are never shown on screen.',
+  'history.import': 'Import previous draws',
+  'history.export': 'Export draws',
+  'history.exportDraw': 'Export draw',
+  'history.unnamed': 'unnamed',
+  'history.importTitle': 'Import previous draws',
+  'history.importHelp': 'Upload a file exported with “Export draw” (or a configuration that includes draws), <strong>paste the secret links</strong> of a previous draw (decrypted on your device) or <strong>type the pairs</strong>, one per line: <code>Ana &gt; Luis</code>.',
+  'history.paste': '…or paste the links or pairs here',
+  'history.placeholder': 'Ana > Luis\nLuis > Marta\nMarta > Ana\n\nor paste the links: https://…/reveal.html#…',
+  'history.label': 'Draw name',
+  'history.labelPlaceholder': 'e.g. Christmas 2024',
+  'history.labelHint': 'Only for pairs typed by hand. Links and files already carry their own.',
+  'history.importConfirm': ({ count }) => (count ? `Import ${count} ${plural(count, 'draw', 'draws')}` : 'Import'),
+  'history.found': ({ count }) => `${count} ${plural(count, 'draw', 'draws')} found:`,
+  'history.nothingFound': 'No valid pairs or links found.',
+  'history.pairs': ({ count }) => `${count} ${plural(count, 'pair', 'pairs')}`,
+  'history.alreadyImported': 'already imported',
+  'history.unknownNames': ({ count }) => `${count} ${plural(count, 'pair mentions', 'pairs mention')} people who are not on the list: kept in case you add them later.`,
+  'history.invalidLine': 'Line {line}: pair not understood (use “Ana > Luis”); it will be ignored.',
+  'history.badLinks': ({ count }) => `${count} invalid or damaged ${plural(count, 'link', 'links')}; ignored.`,
+  'history.noDrawsInFile': 'The file does not contain any draw.',
+  'history.imported': ({ count }) => `${count} previous ${plural(count, 'draw', 'draws')} imported`,
+  'history.exportTitle': 'Export draws',
+  'history.exportWhat': 'What do you want to export?',
+  'history.exportCurrent': ({ code }) => `Only the current draw ${code}`,
+  'history.exportCurrentNone': 'Only the current draw (there is none)',
+  'history.exportAll': ({ count }) => `All together: the current and previous ones (${count} ${plural(count, 'draw', 'draws')})`,
+  'history.exportAllPrevious': ({ count }) => `All saved previous draws (${count})`,
+  'history.exportWarning': 'The file contains who gifts whom. Keep it somewhere private and don’t share it before the event.',
+  'history.exportConfirm': 'Download',
+  'history.exported': ({ count }) => `${count} ${plural(count, 'draw', 'draws')} exported`,
+  'help.button': 'Help',
+  'help.title': 'How it works',
+  'help.intro': 'Tap a topic to expand it.',
+  'help.close': 'Close',
+  'help.start.title': `How it works, in short`,
+  'help.start.body': `<p><strong>Who Gifts Who</strong> runs a Secret Santa without a server: everything happens in your browser and is saved on this device.</p>
+<ol>
+<li><strong>Event</strong> (optional): name, date and budget.</li>
+<li><strong>Participants</strong>: add them by hand or import a list.</li>
+<li><strong>Rules</strong>: who cannot gift whom.</li>
+<li><strong>Probabilities</strong> (optional): how likely each pairing is.</li>
+<li><strong>Draw</strong>: the app picks at random and you deliver the results by secret link or in person.</li>
+</ol>
+<p>Each section can be collapsed by tapping its title.</p>`,
+  'help.event.title': `1 · Event`,
+  'help.event.body': `<p>Name, date and budget are optional. If you fill them in, they appear in the message you send and on each participant’s page, next to their result.</p>
+<p>If you change them after the draw, links already generated keep the old details: the app warns you so you can run the draw again.</p>`,
+  'help.participants.title': `2 · Participants`,
+  'help.participants.body': `<ul>
+<li><strong>Name</strong>: required and unique (case-insensitive).</li>
+<li><strong>Family group</strong>: optional. Used by the “Exclude family members” rule. Type the same name for the whole family.</li>
+<li><strong>Phone</strong>: optional, with country code (+44…). With it, the WhatsApp button opens their chat directly.</li>
+</ul>
+<p><strong>Import list</strong>: upload a .txt or .csv with one person per line (<code>name;group;phone</code>), paste the list, or use an exported .json. You get a preview with warnings before confirming.</p>
+<p><strong>Export configuration</strong>: downloads everything (event, participants, rules and previous draws) to reuse next year. It does not include the current draw’s results.</p>`,
+  'help.rules.title': `3 · Rules`,
+  'help.rules.body': `<ul>
+<li><strong>Nobody gifts themselves</strong>: always on.</li>
+<li><strong>Exclude family members</strong>: nobody gifts someone from their own family group.</li>
+<li><strong>Individual exclusion</strong>: “X cannot gift Y”, one way or both ways (e.g. couples).</li>
+</ul>
+<p>Below you can see whether valid combinations exist. If none do, the app explains why and blocks the draw. If there are very few (1 or 2), it warns you: someone could deduce the others’ results.</p>`,
+  'help.previous.title': `Previous draws (no repeated pairs)`,
+  'help.previous.body': `<p>Prevents pairings from previous years from repeating. Each previous draw is a rule you can remove at any time. The pairs are <strong>never shown</strong>: you only see “Do not repeat the pairings of…”.</p>
+<p>Three ways to add a previous draw:</p>
+<ul>
+<li><strong>From the current draw</strong>: in “Organizer options”, tap “New draw without repeating pairs”.</li>
+<li><strong>Import a file</strong> exported with “Export draw/draws” (or a configuration that includes them).</li>
+<li><strong>Paste last year’s secret links</strong> (decrypted on your device) or <strong>type the pairs</strong>, one per line: <code>Ana &gt; Luis</code>.</li>
+</ul>
+<p>Pairs are stored by name: if someone no longer takes part, their pair simply does not apply.</p>`,
+  'help.probabilities.title': `4 · Probabilities`,
+  'help.probabilities.body': `<p>Hidden by default so nobody is influenced. When shown you get:</p>
+<ul>
+<li>The <strong>number of valid combinations</strong>.</li>
+<li>For each person, the probability of gifting each other person and of being gifted by each of them.</li>
+<li>A “who gifts whom” <strong>matrix</strong>: rows = giver, columns = receiver; “—” means not allowed.</li>
+</ul>
+<p>Up to 20 people the calculation is exact; above that it is a sampling estimate (labelled as such).</p>`,
+  'help.draw.title': `5 · Draw`,
+  'help.draw.body': `<p>The app randomly picks <strong>one of all valid combinations</strong>, each equally likely (matching the probabilities shown), using the browser’s secure random generator.</p>
+<p>After the draw <strong>nobody sees the results on screen</strong>, not even the organizer. Then you choose how to deliver them: links or in person.</p>`,
+  'help.links.title': `Delivering by secret link`,
+  'help.links.body': `<p>Each person gets their own link. The result is <strong>encrypted inside the link</strong> (after “#”), so it never goes through a server and can’t be read from the address.</p>
+<ul>
+<li><strong>WhatsApp</strong>: opens WhatsApp with the message ready (straight into their chat if they have a phone).</li>
+<li><strong>Share</strong>: uses your phone’s share menu (when available).</li>
+<li><strong>Copy link</strong>: send it any way you like.</li>
+</ul>
+<p>When opened, the person sees “Hi, [name]”, taps “Find out who I’m gifting” and the result appears with the event details.</p>`,
+  'help.inperson.title': `Delivering in person (pass the phone)`,
+  'help.inperson.body': `<ol>
+<li>The app shows whose turn it is: <strong>hand the phone to that person</strong>.</li>
+<li>That person, and only them, <strong>presses and holds</strong> the button until it fills up to see their result. Holding prevents an accidental double tap from revealing someone else’s.</li>
+<li>They memorise it and tap <strong>Hide</strong>: the result disappears from the screen.</li>
+<li>The app says who to hand the phone to next. Repeat until the end.</li>
+</ol>
+<p>“Exit” asks for confirmation on the same screen and never shows a result again.</p>`,
+  'help.code.title': `The draw code`,
+  'help.code.body': `<p>Every draw has a short code, e.g. <strong>#A7K2</strong>. It appears in the message and on every link page.</p>
+<p>If you run the draw again the code changes, but links you already sent still open (they can’t be revoked without a server). Tell the group which code is valid: anyone opening a link with another code knows it is outdated.</p>`,
+  'help.organizer.title': `Organizer options`,
+  'help.organizer.body': `<ul>
+<li><strong>Reveal all results</strong>: only if someone loses their link. Requires explicit confirmation.</li>
+<li><strong>Run the draw again</strong>: a new draw with new links and a new code.</li>
+<li><strong>Export draw</strong>: downloads the result (only the current one, or all together with the previous ones). The file contains who gifts whom: keep it private.</li>
+<li><strong>New draw without repeating pairs</strong>: saves this draw as “previous” and clears it, ready to draw again.</li>
+<li><strong>Delete draw</strong>: removes it from this device; links already sent keep working.</li>
+</ul>`,
+  'help.nextYear.title': `For next year`,
+  'help.nextYear.body': `<ol>
+<li>After the event, in “Organizer options”, tap <strong>New draw without repeating pairs</strong> (or “Export draw” to keep it separately).</li>
+<li>Tap <strong>Export configuration</strong> and keep the file.</li>
+<li>Next year: <strong>Import list</strong> → choose the file → “Replace the current list”. Participants, rules and previous draws come back.</li>
+</ol>`,
+  'help.privacy.title': `Privacy and limitations`,
+  'help.privacy.body': `<ul>
+<li>No server, no database: everything is stored in this browser. To switch devices, export the configuration.</li>
+<li>The link <strong>is the key</strong>: it is encrypted, but whoever has the link can open it. So the organizer could technically open other people’s links; they are trusted not to.</li>
+<li>The draw and its links are stored on this device so you can resend them. Use “Delete draw” when you are done if you prefer.</li>
+<li>Link previews (in WhatsApp, etc.) never show the result.</li>
+</ul>`,
 };

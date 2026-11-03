@@ -1,27 +1,33 @@
-// Section 4: the draw and the delivery of results (secret links or in-person).
+// Draw section: the draw and the delivery of results (secret links or in-person).
 // Results are never shown to the organizer unless they explicitly ask for it.
 import { $, h, setChildren } from './dom.js';
 import { t, getLanguage } from '../i18n/index.js';
-import { performDraw } from '../core/draw.js';
 import { encryptPayload } from '../core/crypto.js';
+import { eventToPayload, sanitizeEvent } from '../core/event.js';
+import { phoneForWhatsApp } from '../core/participants.js';
+import { runTask } from '../compute.js';
 import { revealUrl, whatsappUrl, canWebShare, webShare, copyText } from './share.js';
 import { confirmDialog, toast } from './feedback.js';
 import { brandIcon } from './icons.js';
 
+// Secret link payload: { v, g: giver, r: receiver, l: language, c: draw code, e?: { n, d, b } event }
 export const PAYLOAD_VERSION = 1;
 
-/** Runs the draw and creates one encrypted token per participant. */
-export async function createDraw(participants, rules) {
-  const draw = performDraw(participants, rules);
+/** Runs the draw (in a worker) and creates one encrypted token per participant. */
+export async function createDraw(participants, rules, event) {
+  const draw = await runTask('draw', 'draw', { participants, rules });
   const lang = getLanguage();
+  const e = eventToPayload(event);
   const tokens = {};
   await Promise.all(
     draw.assignments.map(async (a) => {
-      tokens[a.giverId] = await encryptPayload({ v: PAYLOAD_VERSION, g: a.giverName, r: a.receiverName, l: lang });
+      tokens[a.giverId] = await encryptPayload({ v: PAYLOAD_VERSION, g: a.giverName, r: a.receiverName, l: lang, c: draw.code, e });
     }),
   );
-  return { ...draw, tokens };
+  return { ...draw, event: { ...event }, tokens };
 }
+
+const sameEvent = (a, b) => JSON.stringify(sanitizeEvent(a)) === JSON.stringify(sanitizeEvent(b));
 
 export function createDrawView({ store, openInPerson, reasonText, sections }) {
   const { actions } = store;
@@ -30,11 +36,11 @@ export function createDrawView({ store, openInPerson, reasonText, sections }) {
   let lastDerived = null;
 
   async function runDraw() {
-    const { participants, rules } = store.getState();
+    const { participants, rules, event } = store.getState();
     if (!lastDerived?.feasibility.ok) return;
     drawBtn.disabled = true;
     try {
-      actions.setDraw(await createDraw(participants, rules));
+      actions.setDraw(await createDraw(participants, rules, event));
       allResults.hidden = true;
       toast(t('draw.doneToast'));
       sections.expand('draw-body');
@@ -50,8 +56,18 @@ export function createDrawView({ store, openInPerson, reasonText, sections }) {
   drawBtn.addEventListener('click', runDraw);
 
   $('#redo-draw').addEventListener('click', async () => {
-    const ok = await confirmDialog({ title: t('draw.redoTitle'), message: t('draw.redoMessage'), confirmLabel: t('draw.redo'), danger: true });
+    const code = store.getState().draw?.code || '';
+    const ok = await confirmDialog({ title: t('draw.redoTitle'), message: t('draw.redoMessage', { code }), confirmLabel: t('draw.redo'), danger: true });
     if (ok) runDraw();
+  });
+
+  $('#next-draw').addEventListener('click', async () => {
+    const ok = await confirmDialog({ title: t('draw.nextTitle'), message: t('draw.nextMessage'), confirmLabel: t('draw.next') });
+    if (!ok) return;
+    actions.startNextDrawAvoidingCurrent();
+    allResults.hidden = true;
+    toast(t('draw.nextDone'));
+    $('#rules-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
   $('#discard-draw').addEventListener('click', async () => {
@@ -109,10 +125,11 @@ export function createDrawView({ store, openInPerson, reasonText, sections }) {
     );
   }
 
-  function linkRow(assignment, token) {
+  function linkRow(assignment, token, draw, phone) {
     const url = revealUrl(token);
     const name = assignment.giverName;
-    const message = t('share.message', { name, url });
+    const eventName = draw.event?.name || '';
+    const message = t('share.message', { name, url, event: eventName, code: draw.code || '' });
     return h(
       'li',
       { class: 'link-row' },
@@ -120,7 +137,7 @@ export function createDrawView({ store, openInPerson, reasonText, sections }) {
       h(
         'div',
         { class: 'row-actions' },
-        h('a', { class: 'btn btn-whatsapp', href: whatsappUrl(message), target: '_blank', rel: 'noopener noreferrer', 'aria-label': t('share.whatsappLabel', { name }) }, brandIcon('whatsapp'), t('share.whatsapp')),
+        h('a', { class: 'btn btn-whatsapp', href: whatsappUrl(message, phoneForWhatsApp(phone)), target: '_blank', rel: 'noopener noreferrer', 'aria-label': t('share.whatsappLabel', { name }) }, brandIcon('whatsapp'), t('share.whatsapp')),
         canWebShare()
           ? h('button', {
               type: 'button',
@@ -128,7 +145,7 @@ export function createDrawView({ store, openInPerson, reasonText, sections }) {
               'aria-label': t('share.shareLabel', { name }),
               onclick: async () => {
                 try {
-                  await webShare({ title: 'Who Gifts Who', text: t('share.shareText', { name }), url });
+                  await webShare({ title: eventName || 'Who Gifts Who', text: t('share.shareText', { name, event: eventName }), url });
                 } catch {
                   toast(t('share.shareError'));
                 }
@@ -165,10 +182,12 @@ export function createDrawView({ store, openInPerson, reasonText, sections }) {
       date: date.toLocaleString(getLanguage() === 'es' ? 'es-ES' : 'en-GB', { dateStyle: 'medium', timeStyle: 'short' }),
       count: draw.assignments.length,
     });
-    const stale = draw.signature !== derived.signature;
+    $('#draw-code').textContent = draw.code ? `#${draw.code}` : '—';
+    const stale = draw.signature !== derived.signature || !sameEvent(draw.event, state.event);
     $('#draw-stale').hidden = !stale;
     $('#draw-stale').textContent = stale ? t('draw.stale') : '';
-    setChildren($('#link-list'), draw.assignments.map((a) => linkRow(a, draw.tokens[a.giverId])));
+    const phones = new Map(state.participants.map((p) => [p.id, p.phone]));
+    setChildren($('#link-list'), draw.assignments.map((a) => linkRow(a, draw.tokens[a.giverId], draw, phones.get(a.giverId))));
     if (!allResults.hidden) renderAllResults(draw);
   }
 

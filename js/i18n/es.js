@@ -38,11 +38,11 @@ export default {
 
   'import.open': 'Importar lista',
   'import.title': 'Importar participantes',
-  'import.help': 'Sube un archivo <strong>.txt</strong> o <strong>.csv</strong> con un nombre por línea. Si quieres indicar el grupo familiar, añádelo después de un punto y coma: <code>Ana;Familia García</code>. También acepta archivos <strong>.json</strong> exportados desde esta app.',
+  'import.help': 'Sube un archivo <strong>.txt</strong> o <strong>.csv</strong> con un nombre por línea. Opcionalmente, añade el grupo familiar y el teléfono separados por punto y coma: <code>Ana;Familia García;+34 600 123 456</code>. También acepta archivos <strong>.json</strong> exportados desde esta app.',
   'import.file': 'Archivo',
   'import.chooseFile': 'Elegir archivo…',
   'import.paste': '…o pega la lista aquí',
-  'import.placeholder': 'Ana;Familia García\nLuis;Familia García\nMarta',
+  'import.placeholder': 'Ana;Familia García\nLuis;Familia García;+34 600 123 456\nMarta',
   'import.mode': '¿Qué hacer con la lista actual?',
   'import.modeAdd': 'Añadir a la lista actual',
   'import.modeReplace': 'Reemplazar la lista actual (y sus reglas)',
@@ -123,7 +123,7 @@ export default {
   'draw.error': 'No se pudo realizar el sorteo. Revisa las reglas.',
   'draw.doneTitle': 'Sorteo realizado.',
   'draw.doneText': ({ date, count }) => `${date} · ${count} personas. Los resultados están ocultos: ni siquiera tú los ves aquí.`,
-  'draw.stale': 'Has cambiado participantes o reglas después del sorteo. Los enlaces muestran el resultado anterior: repite el sorteo si quieres aplicar los cambios.',
+  'draw.stale': 'Has cambiado participantes, reglas o datos del evento después del sorteo. Los enlaces generados muestran el resultado y los datos anteriores: repite el sorteo si quieres aplicar los cambios.',
   'draw.deliveryMode': 'Cómo entregar los resultados',
   'draw.tabLinks': 'Enviar enlaces',
   'draw.tabInPerson': 'Presencial',
@@ -141,7 +141,7 @@ export default {
   'draw.gives': 'regala a',
   'draw.redo': 'Repetir sorteo',
   'draw.redoTitle': '¿Repetir el sorteo?',
-  'draw.redoMessage': 'Se generará un sorteo nuevo con enlaces nuevos. Los enlaces que ya hayas enviado seguirán mostrando el resultado anterior, así que tendrás que reenviarlos todos.',
+  'draw.redoMessage': ({ code }) => `Se generará un sorteo nuevo, con enlaces nuevos y otro código (el actual es #${code}). Los enlaces ya enviados seguirán abriéndose y mostrarán el resultado anterior con el código #${code}: reenvía los nuevos y avisa al grupo de cuál es el código válido.`,
   'draw.discard': 'Borrar sorteo',
   'draw.discardTitle': '¿Borrar el sorteo?',
   'draw.discardMessage': 'Se borrará el sorteo de este dispositivo. Los enlaces ya enviados seguirán funcionando.',
@@ -155,8 +155,8 @@ export default {
   'share.copied': 'Enlace de {name} copiado',
   'share.copyError': 'No se pudo copiar el enlace',
   'share.shareError': 'No se pudo compartir el enlace',
-  'share.message': '🎁 ¡Hola, {name}! Ya tenemos el sorteo del amigo invisible. Abre tu enlace secreto para descubrir a quién le regalas (no lo compartas con nadie): {url}',
-  'share.shareText': '🎁 ¡Hola, {name}! Abre tu enlace secreto para descubrir a quién le regalas en el amigo invisible.',
+  'share.message': ({ name, url, event, code }) => `🎁 ¡Hola, ${name}! Ya tenemos el sorteo del amigo invisible${event ? ` «${event}»` : ''}${code ? ` (código #${code})` : ''}. Abre tu enlace secreto para descubrir a quién le regalas (no lo compartas con nadie): ${url}`,
+  'share.shareText': ({ name, event }) => `🎁 ¡Hola, ${name}! Abre tu enlace secreto para descubrir a quién le regalas en el amigo invisible${event ? ` «${event}»` : ''}.`,
 
   'inperson.exit': 'Salir',
   'inperson.exitTitle': '¿Salir del sorteo presencial?',
@@ -200,4 +200,157 @@ export default {
   'reveal.youGift': 'Le regalas a…',
   'reveal.keepSecret': '¡Shhh! Guarda el secreto 🤫',
   'reveal.createOwn': 'Organiza tu propio amigo invisible con Who Gifts Who',
+  'event.title': 'Evento',
+  'event.hint': 'Todo es opcional. Aparecerá en el mensaje y en la página de cada participante, junto a su resultado.',
+  'event.name': 'Nombre del evento',
+  'event.namePlaceholder': 'p. ej. Navidad en familia 2026',
+  'event.date': 'Fecha',
+  'event.budget': 'Presupuesto',
+  'event.budgetPlaceholder': 'p. ej. 30 €',
+  'event.badgeEmpty': 'Sin datos',
+  'participants.phone': 'Teléfono',
+  'participants.phonePlaceholder': '+34 600 123 456',
+  'participants.phoneHint': 'Con prefijo del país. Sirve para abrir su chat de WhatsApp directamente.',
+  'errors.phoneInvalid': 'El teléfono no parece válido. Escríbelo con el prefijo del país, p. ej. +34 600 123 456.',
+  'errors.phoneNoPrefix': 'Añade el prefijo del país al principio, p. ej. +34 600 123 456.',
+  'import.issuePhone': 'Línea {line}: el teléfono de «{name}» no es válido (¿falta el prefijo del país?); se importará sin teléfono.',
+  'import.extraEvent': 'Se importarán los datos del evento.',
+  'import.extraPrevious': ({ count }) => `Se importarán ${count} ${plural(count, 'sorteo anterior', 'sorteos anteriores')} para no repetir parejas.`,
+  'feasibility.combinations': 'Hay {count} combinaciones posibles.',
+  'feasibility.fewCombinations': ({ count }) => count === 1 ? 'Solo hay 1 combinación posible: el resultado está decidido de antemano. Añade personas o quita reglas.' : `Solo hay ${count} combinaciones posibles: quien sepa su resultado puede deducir el de los demás. Añade personas o quita reglas.`,
+  'draw.codeLabel': 'Código del sorteo',
+  'draw.codeHint': 'Aparece en el mensaje y en la página de cada enlace. Si repites el sorteo, el código cambia: dile al grupo cuál es el código válido y así nadie se fiará de un enlace antiguo.',
+  'draw.next': 'Nuevo sorteo sin repetir parejas',
+  'draw.nextTitle': '¿Preparar un nuevo sorteo sin repetir parejas?',
+  'draw.nextMessage': 'Pensado para el año siguiente. Las parejas de este sorteo se guardarán como «sorteo anterior» (sin mostrar quién regaló a quién) y este sorteo se borrará de este dispositivo. Los enlaces ya enviados seguirán funcionando. Si exportas la configuración, se incluye en el archivo.',
+  'draw.nextDone': 'Listo: el próximo sorteo no repetirá las parejas anteriores.',
+  'reveal.event': 'Evento',
+  'reveal.date': 'Fecha',
+  'reveal.budget': 'Presupuesto',
+  'reveal.code': 'Código del sorteo',
+  'rules.previousRule': ({ draw, applies, total }) => `No repetir parejas de ${draw}` + (applies === total ? ` (${total} ${plural(total, 'pareja', 'parejas')}).` : ` (aplican ${applies} de ${total} parejas a los participantes actuales).`),
+  'history.title': 'Sorteos anteriores',
+  'history.hint': 'Evita repetir parejas de años anteriores. Las parejas no se muestran en pantalla.',
+  'history.import': 'Importar sorteos anteriores',
+  'history.export': 'Exportar sorteos',
+  'history.exportDraw': 'Exportar sorteo',
+  'history.unnamed': 'sin nombre',
+  'history.importTitle': 'Importar sorteos anteriores',
+  'history.importHelp': 'Sube un archivo exportado con «Exportar sorteo» (o una configuración que los incluya), <strong>pega los enlaces secretos</strong> de un sorteo anterior (se descifran en tu dispositivo) o <strong>escribe las parejas</strong>, una por línea: <code>Ana &gt; Luis</code>.',
+  'history.paste': '…o pega aquí los enlaces o las parejas',
+  'history.placeholder': 'Ana > Luis\nLuis > Marta\nMarta > Ana\n\no pega los enlaces: https://…/reveal.html#…',
+  'history.label': 'Nombre del sorteo',
+  'history.labelPlaceholder': 'p. ej. Navidad 2024',
+  'history.labelHint': 'Solo para parejas escritas a mano. Los enlaces y archivos ya traen el suyo.',
+  'history.importConfirm': ({ count }) => (count ? `Importar ${count} ${plural(count, 'sorteo', 'sorteos')}` : 'Importar'),
+  'history.found': ({ count }) => `${count} ${plural(count, 'sorteo encontrado', 'sorteos encontrados')}:`,
+  'history.nothingFound': 'No se ha encontrado ninguna pareja ni enlace válido.',
+  'history.pairs': ({ count }) => `${count} ${plural(count, 'pareja', 'parejas')}`,
+  'history.alreadyImported': 'ya importado',
+  'history.unknownNames': ({ count }) => `${count} ${plural(count, 'pareja menciona', 'parejas mencionan')} a personas que no están en la lista: se guardan por si las añades después.`,
+  'history.invalidLine': 'Línea {line}: no se entiende la pareja (usa «Ana > Luis»); se ignorará.',
+  'history.badLinks': ({ count }) => (count === 1 ? '1 enlace no es válido o está dañado; se ignorará.' : `${count} enlaces no son válidos o están dañados; se ignorarán.`),
+  'history.noDrawsInFile': 'El archivo no contiene ningún sorteo.',
+  'history.imported': ({ count }) => `${count} ${plural(count, 'sorteo anterior importado', 'sorteos anteriores importados')}`,
+  'history.exportTitle': 'Exportar sorteos',
+  'history.exportWhat': '¿Qué quieres exportar?',
+  'history.exportCurrent': ({ code }) => `Solo el sorteo actual ${code}`,
+  'history.exportCurrentNone': 'Solo el sorteo actual (no hay ninguno)',
+  'history.exportAll': ({ count }) => `Todos juntos: el actual y los anteriores (${count} ${plural(count, 'sorteo', 'sorteos')})`,
+  'history.exportAllPrevious': ({ count }) => `Todos los sorteos anteriores guardados (${count})`,
+  'history.exportWarning': 'El archivo incluye quién regala a quién. Guárdalo en un lugar privado y no lo compartas antes del evento.',
+  'history.exportConfirm': 'Descargar',
+  'history.exported': ({ count }) => `${count} ${plural(count, 'sorteo exportado', 'sorteos exportados')}`,
+  'help.button': 'Ayuda',
+  'help.title': 'Cómo funciona',
+  'help.intro': 'Pulsa cada tema para desplegarlo.',
+  'help.close': 'Cerrar',
+  'help.start.title': `Cómo funciona, en resumen`,
+  'help.start.body': `<p><strong>Who Gifts Who</strong> organiza un amigo invisible sin servidor: todo ocurre en tu navegador y se guarda en este dispositivo.</p>
+<ol>
+<li><strong>Evento</strong> (opcional): nombre, fecha y presupuesto.</li>
+<li><strong>Participantes</strong>: añádelos a mano o importa una lista.</li>
+<li><strong>Reglas</strong>: quién no puede regalar a quién.</li>
+<li><strong>Probabilidades</strong> (opcional): cómo de probable es cada pareja.</li>
+<li><strong>Sorteo</strong>: la app elige al azar y entregas los resultados por enlace secreto o en persona.</li>
+</ol>
+<p>Cada sección se puede plegar pulsando su título.</p>`,
+  'help.event.title': `1 · Evento`,
+  'help.event.body': `<p>Nombre, fecha y presupuesto son opcionales. Si los rellenas, aparecen en el mensaje que envías y en la página de cada participante, junto a su resultado.</p>
+<p>Si los cambias después del sorteo, los enlaces ya generados siguen mostrando los datos antiguos: la app te avisa para que repitas el sorteo.</p>`,
+  'help.participants.title': `2 · Participantes`,
+  'help.participants.body': `<ul>
+<li><strong>Nombre</strong>: obligatorio y sin repetir (no distingue mayúsculas).</li>
+<li><strong>Grupo familiar</strong>: opcional. Sirve para la regla «Excluir familiares». Escribe el mismo nombre para toda la familia.</li>
+<li><strong>Teléfono</strong>: opcional, con prefijo del país (+34…). Si lo pones, el botón de WhatsApp abre directamente su chat.</li>
+</ul>
+<p><strong>Importar lista</strong>: sube un .txt o .csv con una persona por línea (<code>nombre;grupo;teléfono</code>), pega la lista o usa un .json exportado. Verás una vista previa con los avisos antes de confirmar.</p>
+<p><strong>Exportar configuración</strong>: descarga todo (evento, participantes, reglas y sorteos anteriores) para reutilizarlo el año que viene. No incluye el resultado del sorteo actual.</p>`,
+  'help.rules.title': `3 · Reglas`,
+  'help.rules.body': `<ul>
+<li><strong>Nadie se regala a sí mismo</strong>: siempre activa.</li>
+<li><strong>Excluir familiares</strong>: nadie regala a alguien de su mismo grupo familiar.</li>
+<li><strong>Exclusión individual</strong>: «X no puede regalar a Y», en un sentido o en ambos (por ejemplo, parejas).</li>
+</ul>
+<p>Debajo verás si hay combinaciones posibles. Si no las hay, la app explica el motivo y no deja sortear. Si hay muy pocas (1 o 2), avisa: alguien podría deducir el resultado de los demás.</p>`,
+  'help.previous.title': `Sorteos anteriores (no repetir parejas)`,
+  'help.previous.body': `<p>Sirve para que no se repitan las parejas de años anteriores. Cada sorteo anterior es una regla que puedes quitar cuando quieras. Las parejas <strong>no se muestran</strong>: solo verás «No repetir las parejas de…».</p>
+<p>Tres formas de añadir un sorteo anterior:</p>
+<ul>
+<li><strong>Desde el sorteo actual</strong>: en «Opciones del organizador», pulsa «Nuevo sorteo sin repetir parejas».</li>
+<li><strong>Importar un archivo</strong> exportado con «Exportar sorteo/sorteos» (o una configuración que los incluya).</li>
+<li><strong>Pegar los enlaces secretos</strong> del año pasado (la app los descifra en tu dispositivo) o <strong>escribir las parejas</strong>, una por línea: <code>Ana &gt; Luis</code>.</li>
+</ul>
+<p>Las parejas se guardan por nombre: si alguien ya no participa, su pareja simplemente no se aplica.</p>`,
+  'help.probabilities.title': `4 · Probabilidades`,
+  'help.probabilities.body': `<p>Están ocultas por defecto para no condicionar a nadie. Al activarlas verás:</p>
+<ul>
+<li>El <strong>número de combinaciones válidas</strong>.</li>
+<li>Para cada persona, la probabilidad de que regale a cada una de las demás y de que cada una le regale a ella.</li>
+<li>Una <strong>matriz</strong> «quién regala a quién»: filas = quien regala, columnas = quien recibe; «—» significa que no está permitido.</li>
+</ul>
+<p>Hasta 20 personas el cálculo es exacto; con más, es una estimación por muestreo (se indica).</p>`,
+  'help.draw.title': `5 · Sorteo`,
+  'help.draw.body': `<p>La app elige al azar <strong>una de todas las combinaciones válidas</strong>, todas con la misma probabilidad (coincide con las probabilidades mostradas). Usa el generador aleatorio seguro del navegador.</p>
+<p>Tras el sorteo, <strong>nadie ve los resultados en pantalla</strong>, ni siquiera quien organiza. Después eliges cómo entregarlos: enlaces o en persona.</p>`,
+  'help.links.title': `Entregar por enlace secreto`,
+  'help.links.body': `<p>Cada persona tiene su propio enlace. El resultado va <strong>cifrado dentro del enlace</strong> (después de «#»), así que no pasa por ningún servidor y no se ve mirando la dirección.</p>
+<ul>
+<li><strong>WhatsApp</strong>: abre WhatsApp con el mensaje preparado (directamente en su chat si tiene teléfono).</li>
+<li><strong>Compartir</strong>: usa el menú de compartir del móvil (si está disponible).</li>
+<li><strong>Copiar enlace</strong>: para enviarlo por donde quieras.</li>
+</ul>
+<p>Al abrirlo, la persona ve «Hola, [nombre]», pulsa «Descubrir a quién le regalo» y aparece el resultado con los datos del evento.</p>`,
+  'help.inperson.title': `Entregar en persona (pasar el móvil)`,
+  'help.inperson.body': `<ol>
+<li>La app muestra a quién le toca: <strong>pásale el móvil a esa persona</strong>.</li>
+<li>Esa persona, y solo ella, <strong>mantiene pulsado</strong> el botón hasta que se llena para ver su resultado. Mantenerlo evita que un doble toque accidental revele el de otra persona.</li>
+<li>Lo memoriza y pulsa <strong>Ocultar</strong>: el resultado desaparece de la pantalla.</li>
+<li>La app indica a quién pasar el móvil después. Repetid hasta el final.</li>
+</ol>
+<p>«Salir» pide confirmación dentro de la propia pantalla y nunca vuelve a mostrar un resultado.</p>`,
+  'help.code.title': `El código del sorteo`,
+  'help.code.body': `<p>Cada sorteo tiene un código corto, por ejemplo <strong>#A7K2</strong>. Aparece en el mensaje y en la página de cada enlace.</p>
+<p>Si repites el sorteo, el código cambia, pero los enlaces que ya enviaste siguen abriéndose (no se pueden anular sin servidor). Dile al grupo cuál es el código válido: si alguien abre un enlace con otro código, sabrá que es antiguo.</p>`,
+  'help.organizer.title': `Opciones del organizador`,
+  'help.organizer.body': `<ul>
+<li><strong>Revelar todos los resultados</strong>: solo si alguien pierde su enlace. Pide confirmación explícita.</li>
+<li><strong>Repetir sorteo</strong>: sorteo nuevo con enlaces y código nuevos.</li>
+<li><strong>Exportar sorteo</strong>: descarga el resultado (solo el actual o todos juntos con los anteriores). El archivo contiene quién regala a quién: guárdalo en privado.</li>
+<li><strong>Nuevo sorteo sin repetir parejas</strong>: guarda este sorteo como «anterior» y lo borra, listo para sortear de nuevo.</li>
+<li><strong>Borrar sorteo</strong>: lo elimina de este dispositivo; los enlaces enviados siguen funcionando.</li>
+</ul>`,
+  'help.nextYear.title': `Para el año que viene`,
+  'help.nextYear.body': `<ol>
+<li>Después del evento, en «Opciones del organizador», pulsa <strong>Nuevo sorteo sin repetir parejas</strong> (o «Exportar sorteo» para guardarlo aparte).</li>
+<li>Pulsa <strong>Exportar configuración</strong> y guarda el archivo.</li>
+<li>El año siguiente, <strong>Importar lista</strong> → elige el archivo → «Reemplazar la lista actual». Vuelven los participantes, las reglas y los sorteos anteriores.</li>
+</ol>`,
+  'help.privacy.title': `Privacidad y límites`,
+  'help.privacy.body': `<ul>
+<li>No hay servidor ni base de datos: todo se guarda en este navegador. Si cambias de dispositivo, exporta la configuración.</li>
+<li>El enlace <strong>es la llave</strong>: está cifrado, pero quien tenga el enlace puede abrirlo. Por eso quien organiza podría, técnicamente, abrir enlaces ajenos; se confía en que no lo haga.</li>
+<li>El sorteo y sus enlaces se guardan en este dispositivo para poder reenviarlos. Usa «Borrar sorteo» al terminar si quieres.</li>
+<li>La vista previa de los enlaces (en WhatsApp, etc.) nunca muestra el resultado.</li>
+</ul>`,
 };

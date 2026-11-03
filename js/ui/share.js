@@ -7,8 +7,9 @@ export function revealUrl(token) {
   return url.href;
 }
 
-export function whatsappUrl(text) {
-  return `https://wa.me/?text=${encodeURIComponent(text)}`;
+/** wa.me link; with a phone (international digits) it opens that chat directly. */
+export function whatsappUrl(text, phone = null) {
+  return `https://wa.me/${phone || ''}?text=${encodeURIComponent(text)}`;
 }
 
 export function canWebShare() {

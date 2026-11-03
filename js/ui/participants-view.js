@@ -1,4 +1,4 @@
-// Section 1: add, edit, remove participants; export; clear.
+// Participants section: add, edit, remove participants; export; clear.
 import { $, h, icon, setChildren } from './dom.js';
 import { t } from '../i18n/index.js';
 import { listGroups } from '../core/participants.js';
@@ -11,32 +11,43 @@ export function createParticipantsView({ store, openImport }) {
   const form = $('#add-participant-form');
   const nameInput = $('#new-name');
   const groupInput = $('#new-group');
+  const phoneInput = $('#new-phone');
   const addError = $('#add-error');
   const list = $('#participant-list');
   let editingId = null;
 
-  const showError = (el, code, input) => {
+  /** Shows an error code and flags the field it belongs to. */
+  const showError = (el, code, fields) => {
     el.textContent = code ? t(`errors.${code}`) : '';
-    if (input) input.setAttribute('aria-invalid', code ? 'true' : 'false');
+    const target = !code ? null : code.startsWith('phone') ? fields.phone : code.startsWith('group') ? fields.group : fields.name;
+    for (const input of Object.values(fields)) input.setAttribute('aria-invalid', String(input === target));
+    target?.focus();
   };
+  const addFields = { name: nameInput, group: groupInput, phone: phoneInput };
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-    const error = actions.addParticipant(nameInput.value, groupInput.value);
-    showError(addError, error, nameInput);
+    const error = actions.addParticipant({ name: nameInput.value, group: groupInput.value, phone: phoneInput.value });
+    showError(addError, error, addFields);
     if (!error) {
       nameInput.value = ''; // keep the group: handy when adding a whole family
+      phoneInput.value = '';
       nameInput.focus();
     }
   });
-  nameInput.addEventListener('input', () => showError(addError, null, nameInput));
+  for (const input of Object.values(addFields)) {
+    input.addEventListener('input', () => {
+      addError.textContent = '';
+      input.setAttribute('aria-invalid', 'false');
+    });
+  }
 
   $('#open-import').addEventListener('click', openImport);
 
   $('#export-config').addEventListener('click', () => {
-    const { participants, rules } = store.getState();
+    const { participants, rules, event } = store.getState();
     const date = new Date().toISOString().slice(0, 10);
-    downloadFile(`who-gifts-who-${date}.json`, JSON.stringify(exportConfig(participants, rules), null, 2));
+    downloadFile(`who-gifts-who-${date}.json`, JSON.stringify(exportConfig(participants, rules, event), null, 2));
     toast(t('export.done'));
   });
 
@@ -54,7 +65,13 @@ export function createParticipantsView({ store, openImport }) {
     return h(
       'li',
       { class: 'participant' },
-      h('div', { class: 'participant-info' }, h('span', { class: 'participant-name' }, p.name), p.group ? h('span', { class: 'chip' }, p.group) : null),
+      h(
+        'div',
+        { class: 'participant-info' },
+        h('span', { class: 'participant-name' }, p.name),
+        p.group ? h('span', { class: 'chip' }, p.group) : null,
+        p.phone ? h('span', { class: 'participant-phone' }, h('span', { class: 'visually-hidden' }, `${t('participants.phone')}: `), p.phone) : null,
+      ),
       h(
         'div',
         { class: 'row-actions' },
@@ -86,9 +103,12 @@ export function createParticipantsView({ store, openImport }) {
   function editRow(p) {
     const nameId = `edit-name-${p.id}`;
     const groupId = `edit-group-${p.id}`;
+    const phoneId = `edit-phone-${p.id}`;
     const error = h('p', { class: 'field-error', role: 'alert' });
     const nameField = h('input', { id: nameId, type: 'text', value: p.name, maxlength: 60, required: true, autocomplete: 'off' });
     const groupField = h('input', { id: groupId, type: 'text', value: p.group, maxlength: 60, list: 'group-options', autocomplete: 'off' });
+    const phoneField = h('input', { id: phoneId, type: 'tel', inputmode: 'tel', value: p.phone || '', maxlength: 25, autocomplete: 'off', placeholder: t('participants.phonePlaceholder') });
+    const fields = { name: nameField, group: groupField, phone: phoneField };
     const cancel = () => {
       editingId = null;
       render(store.getState());
@@ -99,13 +119,13 @@ export function createParticipantsView({ store, openImport }) {
       h(
         'form',
         {
-          class: 'form-row',
+          class: 'participant-form',
           novalidate: true,
           onsubmit: (event) => {
             event.preventDefault();
-            const code = actions.updateParticipant(p.id, { name: nameField.value, group: groupField.value });
+            const code = actions.updateParticipant(p.id, { name: nameField.value, group: groupField.value, phone: phoneField.value });
             if (code) {
-              showError(error, code, nameField);
+              showError(error, code, fields);
               return;
             }
             editingId = null;
@@ -115,6 +135,7 @@ export function createParticipantsView({ store, openImport }) {
         },
         h('div', { class: 'field' }, h('label', { for: nameId }, t('participants.name')), nameField),
         h('div', { class: 'field' }, h('label', { for: groupId }, t('participants.group')), groupField),
+        h('div', { class: 'field' }, h('label', { for: phoneId }, t('participants.phone')), phoneField),
         h('div', { class: 'row-actions' }, h('button', { type: 'submit', class: 'btn btn-primary' }, t('common.save')), h('button', { type: 'button', class: 'btn', onclick: cancel }, t('common.cancel'))),
         error,
       ),

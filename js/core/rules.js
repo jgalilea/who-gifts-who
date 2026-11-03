@@ -1,9 +1,14 @@
-// Rules: { excludeFamily: boolean, exclusions: [{ id, from, to, mutual }] }
-// "from" and "to" are participant ids. Nobody can ever gift themselves (implicit, always on).
-import { createId, sameGroup } from './participants.js';
+// Rules: {
+//   excludeFamily: boolean,
+//   exclusions: [{ id, from, to, mutual }],          individual exclusions
+//   previousDraws: [history entry],                  past draws whose pairings must not repeat
+// }
+// Exclusion "from"/"to" are participant ids; previous-draw pairs use names (see history.js).
+// Nobody can ever gift themselves (implicit, always on).
+import { createId, sameGroup, nameKey } from './participants.js';
 
 export function createRules() {
-  return { excludeFamily: false, exclusions: [] };
+  return { excludeFamily: false, exclusions: [], previousDraws: [] };
 }
 
 /**
@@ -44,6 +49,16 @@ export function pruneExclusions(rules, participants) {
   return exclusions.length === rules.exclusions.length ? rules : { ...rules, exclusions };
 }
 
+export function removePreviousDraw(rules, entryId) {
+  return { ...rules, previousDraws: rules.previousDraws.filter((e) => e.id !== entryId) };
+}
+
+/** How many pairs of a previous draw involve two current participants (the ones that apply). */
+export function applicablePairs(entry, participants) {
+  const names = new Set(participants.map((p) => nameKey(p.name)));
+  return entry.pairs.filter((pair) => names.has(nameKey(pair.from)) && names.has(nameKey(pair.to))).length;
+}
+
 /**
  * Builds the "allowed" matrix: allowed[i][j] === 1 when participant i may gift participant j.
  * Order follows the participants array.
@@ -65,6 +80,14 @@ export function buildAllowed(participants, rules) {
     allowed[a][b] = 0;
     if (e.mutual) allowed[b][a] = 0;
   }
+  const byName = new Map(participants.map((p, i) => [nameKey(p.name), i]));
+  for (const entry of rules.previousDraws || []) {
+    for (const pair of entry.pairs) {
+      const a = byName.get(nameKey(pair.from));
+      const b = byName.get(nameKey(pair.to));
+      if (a !== undefined && b !== undefined) allowed[a][b] = 0;
+    }
+  }
   return allowed;
 }
 
@@ -74,5 +97,6 @@ export function configSignature(participants, rules) {
     p: participants.map((p) => [p.id, p.name, p.group.toLocaleLowerCase()]),
     f: !!rules.excludeFamily,
     e: rules.exclusions.map((e) => [e.from, e.to, !!e.mutual]),
+    h: (rules.previousDraws || []).map((entry) => entry.id),
   });
 }

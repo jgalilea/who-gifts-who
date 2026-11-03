@@ -30,6 +30,19 @@ function popcountTable(n) {
 
 const bitIndex = (bit) => 31 - Math.clz32(bit);
 
+// Reused between calls: allocating 8 MB arrays on every keystroke is the main cost at n = 20.
+const buffers = new Map();
+function zeroedBuffer(name, size) {
+  let buf = buffers.get(name);
+  if (!buf || buf.length < size) {
+    buf = new Float64Array(size);
+    buffers.set(name, buf);
+  } else {
+    buf.fill(0, 0, size);
+  }
+  return buf;
+}
+
 /** Bitmask of allowed receivers per giver (only valid for n ≤ 30). */
 export function allowedMasks(allowed) {
   return allowed.map((row) => {
@@ -46,7 +59,7 @@ export function completionCounts(allowed) {
   const size = 1 << n;
   const full = size - 1;
   const pc = popcountTable(n);
-  const g = new Float64Array(size);
+  const g = zeroedBuffer('g', size);
   g[full] = 1;
   for (let mask = full - 1; mask >= 0; mask--) {
     let avail = masks[pc[mask]] & ~mask;
@@ -71,7 +84,7 @@ export function exactAnalysis(allowed) {
   const total = g[0];
   const size = 1 << n;
   const pc = popcountTable(n);
-  const f = new Float64Array(size);
+  const f = zeroedBuffer('f', size);
   const ways = new Float64Array(n * n);
   f[0] = 1;
 
@@ -175,6 +188,14 @@ export function estimateAnalysis(allowed, { rng = cryptoRng, samples = defaultSa
     samples,
     validSamples,
   };
+}
+
+/** Exact number of valid assignments (n ≤ EXACT_LIMIT), or null for larger groups. */
+export function countAssignments(allowed) {
+  const n = allowed.length;
+  if (n === 0 || n > EXACT_LIMIT) return null;
+  const total = completionCounts(allowed).g[0];
+  return { total, log10Total: total > 0 ? Math.log10(total) : -Infinity, countIsExact: total <= Number.MAX_SAFE_INTEGER };
 }
 
 /** Picks the exact method when possible, otherwise the estimate. */

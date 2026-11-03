@@ -17,8 +17,30 @@ export function createId() {
   return randomHex(8);
 }
 
-export function createParticipant({ name, group = '' }) {
-  return { id: createId(), name: cleanText(name), group: cleanText(group) };
+export function createParticipant({ name, group = '', phone = '' }) {
+  return { id: createId(), name: cleanText(name), group: cleanText(group), phone: cleanText(phone) };
+}
+
+/**
+ * Phone number in the international format wa.me expects (digits only, country code
+ * first), or null. Accepts "+34 600 123 456", "0034600123456", "(+34) 600-123-456"…
+ */
+export function phoneForWhatsApp(value) {
+  const compact = cleanText(value).replace(/[\s().-]/g, '');
+  let digits;
+  if (compact.startsWith('+')) digits = compact.slice(1);
+  else if (compact.startsWith('00')) digits = compact.slice(2);
+  else return null;
+  return /^\d{7,15}$/.test(digits) ? digits : null;
+}
+
+/** Error code or null. Phones are optional but must include the country code. */
+export function validatePhone(value) {
+  const clean = cleanText(value);
+  if (!clean) return null;
+  if (!/^[\d\s().+-]+$/.test(clean)) return 'phoneInvalid';
+  if (!/^(\+|00)/.test(clean.replace(/[\s(]/g, ''))) return 'phoneNoPrefix';
+  return phoneForWhatsApp(clean) ? null : 'phoneInvalid';
 }
 
 /**
