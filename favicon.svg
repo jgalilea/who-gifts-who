@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="WGW">
+  <rect width="64" height="64" rx="14" fill="#b3243b"/>
+  <rect x="29" y="0" width="6" height="64" fill="#f2c14e" opacity=".9"/>
+  <text x="32" y="41" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="800" letter-spacing="-1" fill="#ffffff" stroke="#b3243b" stroke-width="3" paint-order="stroke">WGW</text>
+</svg>

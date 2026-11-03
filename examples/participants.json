@@ -1,0 +1,19 @@
+{
+  "app": "who-gifts-who",
+  "version": 1,
+  "participants": [
+    { "name": "Ana", "group": "Familia García" },
+    { "name": "Luis", "group": "Familia García" },
+    { "name": "Carmen", "group": "Familia García" },
+    { "name": "Pedro", "group": "Familia López" },
+    { "name": "Lucía", "group": "Familia López" },
+    { "name": "Marta" },
+    { "name": "Javier" },
+    { "name": "Sofía" }
+  ],
+  "settings": { "excludeFamily": true },
+  "exclusions": [
+    { "from": "Marta", "to": "Javier", "mutual": true },
+    { "from": "Sofía", "to": "Ana", "mutual": false }
+  ]
+}
