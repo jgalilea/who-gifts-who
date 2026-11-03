@@ -110,7 +110,7 @@ export default {
   'prob.gives': 'Probabilidad de que {name} regale a…',
   'prob.receives': 'Probabilidad de que a {name} le regale…',
   'prob.matrix': 'Matriz: quién regala a quién',
-  'prob.matrixHint': 'Cada fila es quien regala; cada columna, quien recibe. «—» significa que no está permitido.',
+  'prob.matrixHint': 'Cada fila es quien regala; cada columna, quien recibe. «—»: no permitido por una regla. «0 %»: ninguna regla lo prohíbe, pero las demás reglas hacen que nunca pueda ocurrir (por ejemplo, porque esas personas ya tienen que regalar a otras).',
   'prob.matrixCaption': 'Probabilidad de que la persona de cada fila regale a la de cada columna',
   'prob.giverAxis': 'Regala ↓',
   'prob.receiverAxis': 'Recibe →',

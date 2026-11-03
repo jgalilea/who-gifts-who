@@ -110,7 +110,7 @@ export default {
   'prob.gives': 'Probability that {name} gifts…',
   'prob.receives': 'Probability that {name} is gifted by…',
   'prob.matrix': 'Matrix: who gifts whom',
-  'prob.matrixHint': 'Each row is the giver, each column the receiver. “—” means not allowed.',
+  'prob.matrixHint': 'Each row is the giver, each column the receiver. “—”: not allowed by a rule. “0%”: no rule forbids it, but the other rules mean it can never happen (e.g. those people must gift someone else).',
   'prob.matrixCaption': 'Probability that the person in each row gifts the person in each column',
   'prob.giverAxis': 'Gives ↓',
   'prob.receiverAxis': 'Receives →',
