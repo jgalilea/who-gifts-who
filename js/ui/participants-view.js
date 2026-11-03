@@ -115,7 +115,7 @@ export function createParticipantsView({ store, openImport }) {
         },
         h('div', { class: 'field' }, h('label', { for: nameId }, t('participants.name')), nameField),
         h('div', { class: 'field' }, h('label', { for: groupId }, t('participants.group')), groupField),
-        h('div', { class: 'row-actions' }, h('button', { type: 'submit', class: 'btn btn-primary' }, icon('💾'), t('common.save')), h('button', { type: 'button', class: 'btn', onclick: cancel }, icon('↩️'), t('common.cancel'))),
+        h('div', { class: 'row-actions' }, h('button', { type: 'submit', class: 'btn btn-primary' }, t('common.save')), h('button', { type: 'button', class: 'btn', onclick: cancel }, t('common.cancel'))),
         error,
       ),
     );

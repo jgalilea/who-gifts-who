@@ -1,6 +1,6 @@
 // Section 4: the draw and the delivery of results (secret links or in-person).
 // Results are never shown to the organizer unless they explicitly ask for it.
-import { $, h, icon, setChildren } from './dom.js';
+import { $, h, setChildren } from './dom.js';
 import { t, getLanguage } from '../i18n/index.js';
 import { performDraw } from '../core/draw.js';
 import { encryptPayload } from '../core/crypto.js';
@@ -133,14 +133,14 @@ export function createDrawView({ store, openInPerson, reasonText, sections }) {
                   toast(t('share.shareError'));
                 }
               },
-            }, icon('📲'), t('share.share'))
+            }, t('share.share'))
           : null,
         h('button', {
           type: 'button',
           class: 'btn',
           'aria-label': t('share.copyLabel', { name }),
           onclick: async () => toast((await copyText(url)) ? t('share.copied', { name }) : t('share.copyError')),
-        }, icon('📋'), t('share.copy')),
+        }, t('share.copy')),
       ),
     );
   }
