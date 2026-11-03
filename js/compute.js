@@ -4,7 +4,8 @@
 // Browsers without module workers fall back to running the task on the main thread.
 import { runComputeTask } from './compute-tasks.js';
 
-const WORKER_URL = new URL('./workers/compute-worker.js', import.meta.url);
+// Carry this module's "?v=" (see scripts/update-version.mjs) so the worker is refreshed too.
+const WORKER_URL = new URL(`./workers/compute-worker.js${new URL(import.meta.url).search}`, import.meta.url);
 let workersSupported = typeof Worker === 'function';
 const channels = new Map(); // name → { worker, pending: { id, resolve, reject } | null }
 let nextId = 1;

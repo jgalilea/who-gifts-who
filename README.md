@@ -50,6 +50,16 @@ The interface is available in **Spanish and English**, works on phones and deskt
 
 All paths are relative, so the app works under `/who-gifts-who/` (or any other sub-path or custom domain). The empty `.nojekyll` file tells GitHub Pages to serve the files as they are.
 
+### Deploying updates (avoid stale caches)
+
+GitHub Pages lets browsers cache files for 10 minutes, so right after a deploy a phone could mix new HTML with old CSS/JS. To avoid that, run this before pushing:
+
+```bash
+node scripts/update-version.mjs   # or: npm run version:assets
+```
+
+It hashes every CSS/JS file and writes `?v=<hash>` into `index.html` and `reveal.html`: the stylesheet, the scripts, the preloads, and an import map that versions every module. It is optional, and the app works without it. Modules loaded inside the Web Worker can't be versioned this way (browsers don't apply import maps in workers).
+
 ### Running locally
 
 ES modules need to be served over HTTP (opening `index.html` directly with `file://` will not work):
@@ -185,6 +195,7 @@ js/storage.js         Safe localStorage helpers
 js/compute.js         Runs heavy tasks in Web Workers (cancellable, with fallback)
 js/compute-tasks.js   The heavy tasks themselves (shared by worker and fallback)
 js/workers/           Web Worker entry point
+scripts/              Optional maintenance scripts (update-version.mjs: cache busting)
 js/core/              Pure logic, no DOM (unit-tested in Node)
   participants.js     Participant model and validation
   event.js            Event details (name, date, budget)

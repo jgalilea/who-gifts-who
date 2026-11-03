@@ -1870,7 +1870,7 @@ input[type="checkbox"]:not(.switch) {
 /* ---------- Budget (amount + currency) ---------- */
 .budget-input {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .budget-input input {
@@ -1880,7 +1880,10 @@ input[type="checkbox"]:not(.switch) {
 
 .budget-input select {
   flex: none;
-  width: 5.25rem;
+  width: 6rem;
+  padding-left: 1rem;
+  font-size: 1.05rem;
+  font-weight: 600;
 }
 
 /* ---------- Existing family groups (one-tap selector) ---------- */
