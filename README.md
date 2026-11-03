@@ -2,39 +2,76 @@
 
 **Who Gifts Who** is a free Secret Santa (*Amigo Invisible*) web app that runs entirely in your browser. It is 100% static (HTML, CSS and vanilla JavaScript modules), with no backend, no database, no build step and no paid services. Upload it to a GitHub repository, turn on GitHub Pages, and it works.
 
-The interface is available in **Spanish and English**, works on phones and desktops, and saves your draft (participants and rules) in the browser's `localStorage`.
+**Live app:** <https://jgalilea.github.io/who-gifts-who/>
+
+The interface is in **Spanish and English**, works on phones and desktops (light and dark themes), and saves your draft (event, participants and rules) in the browser's `localStorage`, so nothing is lost on reload.
+
+## Quick start
+
+1. **Event** (optional): name, date and budget.
+2. **Participants**: add people one by one, or import a list (`.txt`, `.csv`, `.json` or pasted text).
+3. **Rules**: exclude family members, add individual exclusions, or avoid repeating previous draws.
+4. **Probabilities** (optional, hidden by default): see how likely each pairing is.
+5. **Draw**: the app picks a result. Then send each person their **secret link** (WhatsApp, share or copy), or do it **in person** by passing the phone around.
+
+The **Help** button in the header opens a guide that explains every part of the app.
 
 ## Features
 
-- **Event details** (optional): name, date and budget (a number plus a currency symbol; letters are rejected). They appear in the message and on each person's reveal page, next to their result.
-- **Participants**: add, edit and remove people by hand. Names are required and must be unique (case-insensitive). Each person can optionally belong to a **family group** (free text with suggestions) and have a **phone number** (with country code), so the WhatsApp button opens their chat directly.
-- **Import** from `.txt`, `.csv` or `.json` files, or paste a list. A preview shows exactly what will be imported and flags empty lines, duplicates and names that already exist.
-- **Export** the whole configuration (event, participants, groups, phones and rules) to a JSON file so you can reuse it next year.
-- **Rules**:
-  - Nobody can gift themselves (always on).
-  - *Exclude family members*: nobody gifts someone from their own family group.
-  - Individual exclusions ("X cannot gift Y"), one way or both ways.
-  - Active rules are listed clearly, and each one can be removed.
-- **Previous draws (no repeated pairs)**: keep a list of past draws whose pairings must not repeat. Each one is a rule you can remove, and the pairs are never shown on screen. You can add past draws in three ways:
-  - from the current draw (*Organizer options → New draw without repeating pairs*);
-  - by importing a draws file;
-  - by pasting last year's **secret links** (decrypted locally) or typing pairs by hand (`Ana > Luis`).
+### Setup
+- **Event details** (optional): name, date and budget. The budget is a number plus a currency symbol, and letters are rejected. These details appear in the message and on each person's reveal page, next to their result.
+- **Participants**: add, edit and remove people. Names are required and unique (case-insensitive). Each person can optionally have:
+  - a **family group**: free text, with existing groups offered as one-tap buttons;
+  - a **phone number** with country code: the WhatsApp button then opens their chat directly.
+- **Import** from `.txt`, `.csv` or `.json`, or paste a list. A preview shows exactly what will be imported and flags empty lines, duplicates, names already on the list and unusable phone numbers.
+- **Export configuration**: event, participants, groups, phones, rules and previous draws in one JSON file, to reuse next year.
+- **At least 3 participants** (with 2, everyone would know who gifts them).
 
-  Pairs are stored by name, so they still apply if those people are added later.
-- **Export draws**: download only the current draw, or all draws together (current + previous). The file contains who gifts whom, so keep it private.
-- **Help**: a *Help* button in the header opens a guide that explains every part of the app.
-- **At least 3 participants** are required (with 2, everyone would know who gifts them).
-- **Feasibility check**: before the draw, the app checks that at least one valid assignment exists. If none does, it explains why in plain language (e.g. *"Familia García has 5 of 8 people; with family exclusion they can only gift the other 3 people, so no combination is possible"*), and the draw button stays disabled. With up to 20 people it also shows how many valid combinations exist, and warns when there are so few (1 or 2) that people could deduce each other's results.
-- **Exact probabilities** (hidden by default): a "who gifts whom" heat map, ranked lists of "you gift…" and "you are gifted by…" for each person, and the total number of valid combinations. They update in real time as participants or rules change.
-- **Uniform, secure draw**: every valid assignment is equally likely, so results match the probabilities shown. Randomness comes from `crypto.getRandomValues`. The results are **not shown** to the organizer.
-- **Delivery without a server**:
-  - **Secret links**: one link per person, with the result encrypted (AES-GCM, Web Crypto API) inside the URL fragment (`#…`), which browsers never send to any server. Each person has a **WhatsApp** button, a **Share** button (Web Share API, where available) and a **Copy link** button.
-  - **In person**: the phone is passed from person to person with guided steps. The app shows who to hand the phone to; that person **presses and holds** to see their result (so an accidental double tap can never reveal the next person's result), memorises it, and hides it before passing the phone on.
-  - **Reveal all**: an organizer option, behind an explicit confirmation, for when someone loses their link.
-- **Draw code**: every draw gets a short code such as `#A7K2`. It is shown to the organizer, included in each message and printed on each person's reveal page. Running the draw again produces a new code, while links already sent keep working and still show the old code. So when you redo a draw, tell the group *"the valid one is #B9X3"*, and anyone holding a link with another code knows it is outdated.
-- **Link preview**: shared links show a preview card (title, description and image). The secret part of the link is after `#`, which is never sent to servers or preview crawlers, so the preview cannot reveal anything.
-- **No autofill**: form fields opt out of browser autofill, autocomplete history, keyboard suggestions and password-manager overlays. Existing family groups appear as one-tap buttons instead of a suggestion list.
-- **Installable**: app icons and a web manifest, so it can be added to the home screen on iOS and Android.
+### Rules
+- Nobody can gift themselves (always on).
+- **Exclude family members**: nobody gifts someone from their own family group.
+- **Individual exclusions** ("X cannot gift Y"), one way or both ways.
+- **Previous draws (no repeated pairs)**: a list of past draws whose pairings must not repeat. Each one is a rule you can remove, and its pairs are never shown on screen. You can add a past draw in three ways:
+  - from the current draw (*Organizer options → New draw without repeating pairs*);
+  - by importing a draws file or a configuration;
+  - by pasting last year's **secret links** (decrypted on your device) or typing pairs by hand (`Ana > Luis`).
+
+  Pairs are stored by name, so they apply as soon as those people are on the list.
+- **Feasibility check**: before the draw, the app checks that at least one valid assignment exists. If none does, it explains why in plain language (e.g. *"Familia García has 5 of 8 people; with family exclusion they can only gift the other 3 people, so no combination is possible"*) and blocks the draw. With up to 20 people it also shows how many combinations exist, and warns when there are so few (1 or 2) that people could deduce each other's results.
+
+### Probabilities
+- Hidden by default. When shown, you get:
+  - a "who gifts whom" **heat map**;
+  - for the selected person, ranked lists of "you gift…" and "you are gifted by…";
+  - the total number of valid combinations.
+- **Exact up to 20 people**, estimated by sampling above that (labelled as such).
+- Recomputed in real time, in a background thread, whenever participants or rules change.
+
+### The draw
+- **Uniform and secure**: every valid assignment is equally likely, so results match the probabilities shown. Randomness comes from `crypto.getRandomValues`.
+- **Results are never shown to the organizer** unless they explicitly ask for them.
+- **Draw code**: every draw gets a short code such as `#A7K2`, shown to the organizer, in each message and on each reveal page. If you run the draw again, the code changes, but links already sent still open and show the old code. Tell the group *"the valid one is #B9X3"*, and anyone holding a link with another code knows it is outdated.
+
+### Delivering the results (no server)
+- **Secret links**: one link per person. The result is encrypted (AES-GCM, Web Crypto API) inside the URL fragment (`#…`), which browsers never send to any server. Each person has three buttons:
+  - **WhatsApp**: a `wa.me` link with a ready-made message;
+  - **Share**: the Web Share API, where available;
+  - **Copy link**.
+- **Reveal page**: shows *"Hi, [name]"*, a gift that opens with a short animation, then the receiver's name and the event details. The page is laid out before the link is decrypted, so nothing jumps around while it loads.
+- **Link preview card**: shared links show a title, description and image. The secret part (after `#`) never reaches preview crawlers, so the preview cannot reveal anything.
+- **In person**: the phone is passed around with guided steps. The app says who to hand the phone to. That person **presses and holds** the button to see their result, so an accidental double tap can never reveal someone else's. They memorise it, hide it, and pass the phone on. Exiting asks for confirmation on the same screen.
+- **Organizer options**:
+  - reveal all results (behind an explicit confirmation, for lost links);
+  - run the draw again;
+  - **export the draw** (only the current one, or all together with previous draws);
+  - start a new draw without repeating pairs;
+  - delete the draw.
+
+### Usability
+- Collapsible sections (remembered per device), mobile-first layout, light/dark themes and reduced-motion support.
+- Form fields opt out of browser autofill, autocomplete history, keyboard suggestions and password-manager overlays.
+- Installable: PNG app icons and a web manifest for the home screen on iOS and Android.
+- Accessible: labels, keyboard support, visible focus, 44 px touch targets, and colour contrast checked in both themes.
 
 ## Publishing on GitHub Pages (step by step)
 
@@ -50,6 +87,8 @@ The interface is available in **Spanish and English**, works on phones and deskt
 
 All paths are relative, so the app works under `/who-gifts-who/` (or any other sub-path or custom domain). The empty `.nojekyll` file tells GitHub Pages to serve the files as they are.
 
+**If you fork the project**, update the link-preview image URL (`og:image`, currently `https://jgalilea.github.io/who-gifts-who/assets/og-image.png`) in `index.html` and `reveal.html`. Messaging apps need an absolute URL there.
+
 ### Deploying updates (avoid stale caches)
 
 GitHub Pages lets browsers cache files for 10 minutes, so right after a deploy a phone could mix new HTML with old CSS/JS. To avoid that, run this before pushing:
@@ -58,20 +97,20 @@ GitHub Pages lets browsers cache files for 10 minutes, so right after a deploy a
 node scripts/update-version.mjs   # or: npm run version:assets
 ```
 
-It hashes every CSS/JS file and writes `?v=<hash>` into `index.html` and `reveal.html`: the stylesheet, the scripts, the preloads, and an import map that versions every module. It is optional, and the app works without it. Modules loaded inside the Web Worker can't be versioned this way (browsers don't apply import maps in workers).
+It hashes every CSS/JS file and writes `?v=<hash>` into `index.html` and `reveal.html`: the stylesheet, the scripts, the preloads, and an import map that versions every module. It is optional, and the app works without it. Modules loaded inside the Web Worker can't be versioned this way, because browsers don't apply import maps in workers.
 
 ### Running locally
 
 ES modules need to be served over HTTP (opening `index.html` directly with `file://` will not work):
 
 ```bash
-python3 -m http.server 8000
+python3 -m http.server 8000   # or: npm start
 # open http://localhost:8000/
 ```
 
 ## Import file formats
 
-Sample files are in [`examples/`](examples/).
+Sample files are in [`examples/`](examples/) (`participants.txt`, `participants.csv`, `participants.json`).
 
 ### Plain text (`.txt`) or CSV (`.csv`)
 
@@ -88,8 +127,8 @@ Javier
 
 - Supported separators: `;` (recommended), tab, or `,`.
 - Values can be wrapped in double quotes if they contain a separator: `"García, Ana";Familia García`.
-- An optional header line (`name;group`, `nombre;grupo`) is skipped.
-- Phones must start with the country code (`+34…` or `0034…`). A phone without it is dropped (the person is still imported) and the preview says so.
+- An optional header line (`name;group;phone`, `nombre;grupo`…) is skipped.
+- Phones must start with the country code (`+34…` or `0034…`). A phone without it is dropped (the person is still imported), and the preview says so.
 - Empty lines, duplicate names and names already on the list are shown in the preview and skipped.
 - Names and groups are limited to 60 characters. Name and group matching is case-insensitive.
 
@@ -102,7 +141,7 @@ Any of these shapes are accepted:
 ```
 
 ```json
-[{ "name": "Ana", "group": "Familia García" }, { "name": "Marta" }]
+[{ "name": "Ana", "group": "Familia García", "phone": "+34 600 123 456" }, { "name": "Marta" }]
 ```
 
 or a full configuration, which is the format produced by **Export configuration**:
@@ -143,14 +182,16 @@ or a full configuration, which is the format produced by **Export configuration*
 | `participants` | array | Required. Each item is `{ "name": string, "group"?: string, "phone"?: string }`. |
 | `settings.excludeFamily` | boolean | Whether people cannot gift members of their own family group. |
 | `exclusions` | array | Each item is `{ "from": name, "to": name, "mutual": boolean }`. `mutual: true` blocks both directions. |
-| `event` | object | Optional. `{ "name": string, "date": "YYYY-MM-DD", "budget": string }`. |
+| `event` | object | Optional. `{ "name": string, "date": "YYYY-MM-DD", "budget": string }`. The budget is a number plus a currency symbol (`"30 €"`, `"£25"`); other text is normalised. |
 | `previousDraws` | array | Optional. Past draws whose pairings must not repeat: `[{ "code", "label", "date", "pairs": [{ "from": name, "to": name }] }]`. |
 
-Participants are referenced **by name**, so the file is easy to read and edit by hand. When importing, `settings`, `event` and `previousDraws` are only applied in **Replace the current list** mode. Exclusions that mention unknown names are ignored.
+Participants are referenced **by name**, so the file is easy to read and edit by hand. When importing:
+- `settings`, `event` and `previousDraws` are only applied in **Replace the current list** mode.
+- Exclusions that mention unknown names are ignored.
 
 ### Draws file (results)
 
-*Export draw* produces a file with the results, which can be imported later with *Import previous draws*:
+*Export draw* produces a file with the results. It can be imported later with *Import previous draws*:
 
 ```json
 {
@@ -164,19 +205,22 @@ Participants are referenced **by name**, so the file is easy to read and edit by
 }
 ```
 
-*Import previous draws* also accepts a full configuration (its `previousDraws`), pasted secret links (any text containing them, such as a forwarded WhatsApp chat), or pairs typed one per line: `Ana > Luis`, `Ana -> Luis`, `Ana → Luis` or `Ana;Luis`.
+*Import previous draws* also accepts:
+- a full configuration (its `previousDraws`);
+- pasted secret links: any text that contains them, such as a forwarded WhatsApp chat. Links are grouped by draw code;
+- pairs typed one per line: `Ana > Luis`, `Ana -> Luis`, `Ana → Luis` or `Ana;Luis`.
 
 ## How the maths works
 
 All valid assignments (perfect matchings of the bipartite graph *givers → allowed receivers*) are treated as equally likely.
 
-- **Up to 20 participants: exact.** Dynamic programming over bitmasks counts the valid assignments. `f[mask]` is the number of ways to assign the first *k* givers to the receivers in `mask`, and `g[mask]` is the number of ways to complete the assignment. The number of assignments containing *i → j* is `Σ f[mask] · g[mask ∪ {j}]`, so the probability is that count divided by the total.
-- **More than 20: estimated.** The app uses sequential importance sampling (Rasmussen's estimator): givers pick uniformly among the receivers still free, and the product of the number of choices weights each sample. The UI labels these numbers as an estimate.
+- **Up to 20 participants: exact.** Dynamic programming over bitmasks counts the valid assignments. `f[mask]` is the number of ways to assign the first *k* givers to the receivers in `mask`, and `g[mask]` is the number of ways to complete the assignment. The number of assignments containing *i → j* is `Σ f[mask] · g[mask ∪ {j}]`, and dividing by the total gives the probability.
+- **More than 20: estimated.** Sequential importance sampling (Rasmussen's estimator): givers pick uniformly among the receivers still free, and the product of the number of choices weights each sample. The UI labels these numbers as an estimate.
 - **The draw** samples uniformly:
-  - **Up to 20 participants**, it picks receivers one by one, weighted by the DP completion counts (exactly uniform).
-  - **Above 20**, it uses rejection sampling over uniform random permutations (exactly uniform). If the rules are so tight that rejection keeps failing, it falls back to a Markov chain with swap/3-cycle moves, started from a valid matching (approximately uniform).
-  - It never uses the "if you draw yourself, draw again" method, which can dead-end and biases results.
-- **Feasibility** is checked with maximum bipartite matching (Kuhn's algorithm). When no assignment exists, Hall's theorem is used to name the group of people who do not have enough possible receivers.
+  - **up to 20 participants**: receivers are picked one by one, weighted by the DP completion counts (exactly uniform);
+  - **above 20**: rejection sampling over uniform random permutations (exactly uniform). If the rules are so tight that rejection keeps failing, the app falls back to a Markov chain with swap/3-cycle moves started from a valid matching (approximately uniform);
+  - it never uses the "if you draw yourself, draw again" method, which can dead-end and biases results.
+- **Feasibility** uses maximum bipartite matching (Kuhn's algorithm). When no assignment exists, Hall's theorem names the group of people who do not have enough possible receivers.
 - **Performance**: counting, probabilities and the draw run in a Web Worker (`js/workers/compute-worker.js`), so the page never freezes while you type. A newer request cancels the one in progress. DP buffers are reused between runs, and browsers without module workers fall back to the main thread.
 
 ## Project structure
@@ -195,28 +239,35 @@ js/storage.js         Safe localStorage helpers
 js/compute.js         Runs heavy tasks in Web Workers (cancellable, with fallback)
 js/compute-tasks.js   The heavy tasks themselves (shared by worker and fallback)
 js/workers/           Web Worker entry point
-scripts/              Optional maintenance scripts (update-version.mjs: cache busting)
 js/core/              Pure logic, no DOM (unit-tested in Node)
-  participants.js     Participant model and validation
+  participants.js     Participant model, validation and phone numbers
   event.js            Event details (name, date, budget)
-  rules.js            Exclusions, "do not repeat" pairs and the "allowed" matrix
+  rules.js            Exclusions, previous-draw pairs and the "allowed" matrix
   feasibility.js      Matching, feasibility and plain-language reasons
   matching.js         Counting and probabilities (exact DP / sampling)
   draw.js             Uniform draw and draw codes
   history.js          Previous draws: parse, merge, export (pairs by name)
-  config-constants.js Identifiers written into exported files
   crypto.js           AES-GCM secret link tokens
   importer.js         .txt/.csv/.json parsing and preview
   config.js           Export / import of the full configuration
+  config-constants.js Identifiers written into exported files
   random.js           crypto.getRandomValues helpers
-js/i18n/              Translations (es.js, en.js) and helpers
-js/ui/                One module per section/dialog, each with render(state, derived)
-                      (incl. history-view.js for draws import/export, help-view.js for the guide)
+js/i18n/              Translations (es.js, en.js) and formatting helpers
+js/ui/                One module per section or dialog, each with render(state, derived):
+                      event, participants, import, rules, probabilities, draw,
+                      in-person, history (draws import/export), help, sections,
+                      plus shared helpers (dom, feedback, share, icons)
+scripts/              Optional maintenance scripts (update-version.mjs: cache busting)
 examples/             Sample import files
 tests/                Node tests for the logic
 ```
 
-**Extending the app:** add a view in `js/ui/` that exports a `render(state, derived)` function and register it in `js/app.js`. Add new actions in `js/state.js`, and add text keys to both `js/i18n/es.js` and `js/i18n/en.js`. To add a language, create a new dictionary and register it in `js/i18n/index.js`. Secret link payloads are versioned (`v`) and currently carry the giver, receiver, language, draw code and event details.
+**Extending the app:**
+- **A new section or dialog:** add a view in `js/ui/` that exports a `render(state, derived)` function, and register it in `js/app.js`.
+- **New actions:** add them in `js/state.js`.
+- **New texts:** add each key to both `js/i18n/es.js` and `js/i18n/en.js`; help topics live there too (`help.<topic>.*`).
+- **A new language:** create a dictionary and register it in `js/i18n/index.js`.
+- **Secret link payloads** are versioned (`v`) and currently carry the giver, receiver, language, draw code and event details.
 
 ## Tests
 
@@ -226,29 +277,32 @@ The tests need Node.js 20+ and have no dependencies:
 npm test
 ```
 
-They check that:
+The 42 tests check that:
 
 - nobody gifts themselves;
-- family groups and exclusions are respected, including in large groups;
+- family groups, exclusions and previous draws are respected, including in large groups;
 - impossible configurations are detected and explained;
 - exact counts match known values (derangements) and brute force;
 - **draw frequencies match the computed probabilities** over many draws, and every valid assignment is equally likely (chi-square test);
 - import/export round trips work, and the example files import cleanly;
-- secret links decrypt correctly and do not reveal names;
-- phones, event details, draw codes and the "do not repeat" rule behave as expected.
+- secret links decrypt correctly, do not reveal names, and can be turned back into a previous draw;
+- phones, budgets, event details and draw codes behave as expected.
 
-Accessibility was checked with [axe-core](https://github.com/dequelabs/axe-core) (WCAG 2.1 AA, light and dark themes, every screen) and by measuring text contrast on the heat map.
+Accessibility was checked with [axe-core](https://github.com/dequelabs/axe-core) (WCAG 2.1 AA, light and dark themes, every screen and dialog) and by measuring text contrast on the heat map.
 
 ## Limitations and privacy notes
 
-- **The secret link *is* the key.** The result is encrypted, but the decryption key travels inside the link itself, so that anyone can open their own link without a server. Nobody can read a result just by looking at the URL, but anyone who has the link can open it. In particular, the organizer generates and sends the links, so **they could technically open other people's links**. The organizer is trusted not to peek.
+- **The secret link *is* the key.** The result is encrypted, but the decryption key travels inside the link itself, so anyone can open their own link without a server. Nobody can read a result just by looking at the URL, but anyone who has the link can open it. In particular, the organizer generates and sends the links, so **they could technically open other people's links**. The organizer is trusted not to peek.
 - The draw (including all links) is stored in the organizer's browser (`localStorage`) so the links can be sent again later. Anyone with access to that browser could inspect it. Use **Delete draw** when you are done.
-- If you **run the draw again**, links that were already sent keep showing the old result, because each link is self-contained. Resend all links and tell the group the new **draw code**.
+- **Exported draw files contain who gifts whom.** Keep them private.
+- If you **run the draw again**, links already sent keep showing the old result, because each link is self-contained. Resend all links and tell the group the new **draw code**.
 - In-person mode relies on people not looking at the screen when it is not their turn.
 - Above 20 participants, the probabilities and the number of combinations are estimates. For extremely restrictive rules in large groups, the draw is approximately (not exactly) uniform.
 - `localStorage` is per browser and per device. Use **Export configuration** to move your setup elsewhere.
 - Without a phone number, WhatsApp links ask you to pick the contact. With one, they open that chat directly.
-- The link-preview image uses an absolute URL (`https://jgalilea.github.io/who-gifts-who/assets/og-image.png` in `index.html` and `reveal.html`). If you fork the project, change it to your own address. Messaging apps cache previews, so changes can take a while to show.
+- Previous-draw pairs are matched by name: if you rename someone, their old pairs no longer apply to them.
+- Browsers are asked not to autofill, but some (notably Safari on iOS) may still offer contact suggestions.
+- Messaging apps cache link previews, so a changed preview image can take a while to show.
 - The in-person "press and hold" button works with touch, mouse and keyboard (hold Enter/Space). Screen readers can activate it normally.
 
 ## Credits
