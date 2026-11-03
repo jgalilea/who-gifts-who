@@ -182,6 +182,10 @@ They check that:
 - `localStorage` is per browser and per device. Use **Export configuration** to move your setup elsewhere.
 - WhatsApp links use `wa.me` without a phone number, so WhatsApp asks you to pick the contact.
 
+## Credits
+
+Brand logos (WhatsApp) come from [Simple Icons](https://simpleicons.org) v16.36.0, licensed CC0-1.0. They are embedded in `js/ui/icons.js`. To add another brand, copy the `d` attribute of its SVG into the `BRANDS` map. Brand names and logos belong to their respective owners.
+
 ## License
 
 MIT

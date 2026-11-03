@@ -29,6 +29,9 @@ export function h(tag, props = {}, ...children) {
   return el;
 }
 
+/** Decorative emoji, hidden from screen readers (the text label carries the meaning). */
+export const icon = (emoji) => h('span', { class: 'icon', 'aria-hidden': 'true' }, emoji);
+
 /** Replaces all children of `el`. */
 export function setChildren(el, ...children) {
   el.replaceChildren(...children.flat().filter((c) => c !== null && c !== undefined && c !== false));

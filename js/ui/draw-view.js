@@ -1,11 +1,12 @@
 // Section 4: the draw and the delivery of results (secret links or in-person).
 // Results are never shown to the organizer unless they explicitly ask for it.
-import { $, h, setChildren } from './dom.js';
+import { $, h, icon, setChildren } from './dom.js';
 import { t, getLanguage } from '../i18n/index.js';
 import { performDraw } from '../core/draw.js';
 import { encryptPayload } from '../core/crypto.js';
 import { revealUrl, whatsappUrl, canWebShare, webShare, copyText } from './share.js';
 import { confirmDialog, toast } from './feedback.js';
+import { brandIcon } from './icons.js';
 
 export const PAYLOAD_VERSION = 1;
 
@@ -119,7 +120,7 @@ export function createDrawView({ store, openInPerson, reasonText, sections }) {
       h(
         'div',
         { class: 'row-actions' },
-        h('a', { class: 'btn btn-whatsapp', href: whatsappUrl(message), target: '_blank', rel: 'noopener noreferrer', 'aria-label': t('share.whatsappLabel', { name }) }, t('share.whatsapp')),
+        h('a', { class: 'btn btn-whatsapp', href: whatsappUrl(message), target: '_blank', rel: 'noopener noreferrer', 'aria-label': t('share.whatsappLabel', { name }) }, brandIcon('whatsapp'), t('share.whatsapp')),
         canWebShare()
           ? h('button', {
               type: 'button',
@@ -132,14 +133,14 @@ export function createDrawView({ store, openInPerson, reasonText, sections }) {
                   toast(t('share.shareError'));
                 }
               },
-            }, t('share.share'))
+            }, icon('📲'), t('share.share'))
           : null,
         h('button', {
           type: 'button',
           class: 'btn',
           'aria-label': t('share.copyLabel', { name }),
           onclick: async () => toast((await copyText(url)) ? t('share.copied', { name }) : t('share.copyError')),
-        }, t('share.copy')),
+        }, icon('📋'), t('share.copy')),
       ),
     );
   }

@@ -52,7 +52,7 @@ export function createInPersonView() {
       $('#inperson-result-label').textContent = t('inperson.youGift', { name: current.giverName });
       receiverEl.textContent = current.receiverName;
       $('#inperson-memorize').textContent = next ? t('inperson.memorizeNext', { next: next.giverName }) : t('inperson.memorizeLast');
-      $('#inperson-hide').textContent = next ? t('inperson.hideNext', { next: next.giverName }) : t('inperson.hideLast');
+      $('#inperson-hide-label').textContent = next ? t('inperson.hideNext', { next: next.giverName }) : t('inperson.hideLast');
       $('#inperson-hide').focus();
     } else if (phase === 'exit') {
       $('#inperson-exit-cancel').focus();

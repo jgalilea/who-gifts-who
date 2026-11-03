@@ -35,7 +35,7 @@
         <h2 id="participants-title">
           <button type="button" class="section-toggle" aria-expanded="true" aria-controls="participants-body">
             <span class="step" aria-hidden="true">1</span>
-            <span data-i18n="participants.title">Participantes</span>
+            <span class="icon" aria-hidden="true">👥</span> <span data-i18n="participants.title">Participantes</span>
             <span class="chevron" aria-hidden="true"></span>
           </button>
         </h2>
@@ -52,7 +52,7 @@
             <label for="new-group"><span data-i18n="participants.group">Grupo familiar</span> <span class="optional" data-i18n="common.optional">(opcional)</span></label>
             <input id="new-group" name="group" type="text" list="group-options" autocomplete="off" maxlength="60" data-i18n-placeholder="participants.groupPlaceholder">
           </div>
-          <button type="submit" class="btn btn-primary" data-i18n="participants.add">Añadir</button>
+          <button type="submit" class="btn btn-primary"><span class="icon" aria-hidden="true">➕</span> <span data-i18n="participants.add">Añadir</span></button>
           <p class="field-error" id="add-error" role="alert"></p>
         </form>
         <datalist id="group-options"></datalist>
@@ -61,9 +61,9 @@
         <ul id="participant-list" class="participant-list"></ul>
 
         <div class="toolbar">
-          <button type="button" class="btn" id="open-import" data-i18n="import.open">Importar lista</button>
-          <button type="button" class="btn" id="export-config" data-i18n="export.button">Exportar configuración</button>
-          <button type="button" class="btn btn-ghost-danger" id="clear-all" data-i18n="participants.clear">Vaciar todo</button>
+          <button type="button" class="btn" id="open-import"><span class="icon" aria-hidden="true">📥</span> <span data-i18n="import.open">Importar lista</span></button>
+          <button type="button" class="btn" id="export-config"><span class="icon" aria-hidden="true">📤</span> <span data-i18n="export.button">Exportar configuración</span></button>
+          <button type="button" class="btn btn-ghost-danger" id="clear-all"><span class="icon" aria-hidden="true">🧹</span> <span data-i18n="participants.clear">Vaciar todo</span></button>
         </div>
       </div>
     </section>
@@ -74,7 +74,7 @@
         <h2 id="rules-title">
           <button type="button" class="section-toggle" aria-expanded="true" aria-controls="rules-body">
             <span class="step" aria-hidden="true">2</span>
-            <span data-i18n="rules.title">Reglas</span>
+            <span class="icon" aria-hidden="true">📋</span> <span data-i18n="rules.title">Reglas</span>
             <span class="chevron" aria-hidden="true"></span>
           </button>
         </h2>
@@ -85,13 +85,13 @@
         <div class="switch-row">
           <input type="checkbox" id="exclude-family" class="switch" role="switch">
           <label for="exclude-family">
-            <strong data-i18n="rules.excludeFamily">Excluir familiares</strong>
+            <strong><span class="icon" aria-hidden="true">👨‍👩‍👧</span> <span data-i18n="rules.excludeFamily">Excluir familiares</span></strong>
             <span class="hint" data-i18n="rules.excludeFamilyHint"></span>
           </label>
         </div>
 
         <form id="exclusion-form" class="subcard" novalidate>
-          <h3 data-i18n="rules.exclusionTitle">Exclusión individual</h3>
+          <h3><span class="icon" aria-hidden="true">🚫</span> <span data-i18n="rules.exclusionTitle">Exclusión individual</span></h3>
           <div class="exclusion-grid">
             <div class="field">
               <label for="exclusion-from" data-i18n="rules.from">Quién</label>
@@ -108,12 +108,12 @@
                 <option value="both" data-i18n="rules.bothWays">En ambos sentidos</option>
               </select>
             </div>
-            <button type="submit" class="btn btn-primary" data-i18n="rules.addExclusion">Añadir exclusión</button>
+            <button type="submit" class="btn btn-primary"><span class="icon" aria-hidden="true">🚫</span> <span data-i18n="rules.addExclusion">Añadir exclusión</span></button>
             <p class="field-error" id="exclusion-error" role="alert"></p>
           </div>
         </form>
 
-        <h3 data-i18n="rules.active">Reglas activas</h3>
+        <h3><span class="icon" aria-hidden="true">✅</span> <span data-i18n="rules.active">Reglas activas</span></h3>
         <ul id="rules-list" class="rules-list"></ul>
 
         <div id="feasibility" class="status" role="status" aria-live="polite"></div>
@@ -126,7 +126,7 @@
         <h2 id="prob-title">
           <button type="button" class="section-toggle" aria-expanded="true" aria-controls="prob-body-wrap">
             <span class="step" aria-hidden="true">3</span>
-            <span data-i18n="prob.title">Probabilidades</span>
+            <span class="icon" aria-hidden="true">📊</span> <span data-i18n="prob.title">Probabilidades</span>
             <span class="chevron" aria-hidden="true"></span>
           </button>
         </h2>
@@ -136,7 +136,7 @@
         <div class="switch-row">
           <input type="checkbox" id="show-probabilities" class="switch" role="switch" aria-controls="prob-content">
           <label for="show-probabilities">
-            <strong data-i18n="prob.toggle">Mostrar probabilidades</strong>
+            <strong><span class="icon" aria-hidden="true">👁️</span> <span data-i18n="prob.toggle">Mostrar probabilidades</span></strong>
             <span class="hint" data-i18n="prob.toggleHint"></span>
           </label>
         </div>
@@ -161,7 +161,7 @@
               </div>
             </div>
             <div class="prob-matrix">
-              <h3 data-i18n="prob.matrix">Matriz: quién regala a quién</h3>
+              <h3><span class="icon" aria-hidden="true">🗺️</span> <span data-i18n="prob.matrix">Matriz: quién regala a quién</span></h3>
               <p class="hint" data-i18n="prob.matrixHint"></p>
               <div class="heatmap-wrap" tabindex="0" role="region" data-i18n-aria="prob.matrix">
                 <table id="heatmap" class="heatmap"></table>
@@ -178,7 +178,7 @@
         <h2 id="draw-title">
           <button type="button" class="section-toggle" aria-expanded="true" aria-controls="draw-body">
             <span class="step" aria-hidden="true">4</span>
-            <span data-i18n="draw.title">Sorteo</span>
+            <span class="icon" aria-hidden="true">🎁</span> <span data-i18n="draw.title">Sorteo</span>
             <span class="chevron" aria-hidden="true"></span>
           </button>
         </h2>
@@ -188,7 +188,7 @@
       <div class="card-body" id="draw-body">
         <div id="draw-idle">
           <p data-i18n="draw.intro"></p>
-          <button type="button" id="do-draw" class="btn btn-primary btn-large" data-i18n="draw.button">Realizar sorteo</button>
+          <button type="button" id="do-draw" class="btn btn-primary btn-large"><span class="icon" aria-hidden="true">🎲</span> <span data-i18n="draw.button">Realizar sorteo</span></button>
           <p id="draw-blocked" class="hint" role="status"></p>
         </div>
 
@@ -200,8 +200,8 @@
           <p id="draw-stale" class="status status-warn" hidden></p>
 
           <div class="tabs" role="tablist" data-i18n-aria="draw.deliveryMode">
-            <button type="button" role="tab" id="tab-links" class="tab" aria-selected="true" aria-controls="panel-links" data-i18n="draw.tabLinks">Enviar enlaces</button>
-            <button type="button" role="tab" id="tab-inperson" class="tab" aria-selected="false" aria-controls="panel-inperson" tabindex="-1" data-i18n="draw.tabInPerson">Presencial</button>
+            <button type="button" role="tab" id="tab-links" class="tab" aria-selected="true" aria-controls="panel-links"><span class="icon" aria-hidden="true">🔗</span> <span data-i18n="draw.tabLinks">Enviar enlaces</span></button>
+            <button type="button" role="tab" id="tab-inperson" class="tab" aria-selected="false" aria-controls="panel-inperson" tabindex="-1"><span class="icon" aria-hidden="true">📱</span> <span data-i18n="draw.tabInPerson">Presencial</span></button>
           </div>
 
           <div id="panel-links" role="tabpanel" aria-labelledby="tab-links">
@@ -210,12 +210,12 @@
           </div>
           <div id="panel-inperson" role="tabpanel" aria-labelledby="tab-inperson" hidden>
             <p class="hint" data-i18n="draw.inPersonHint"></p>
-            <button type="button" id="start-inperson" class="btn btn-primary btn-large" data-i18n="draw.startInPerson">Empezar</button>
+            <button type="button" id="start-inperson" class="btn btn-primary btn-large"><span class="icon" aria-hidden="true">▶️</span> <span data-i18n="draw.startInPerson">Empezar</span></button>
           </div>
 
           <details class="organizer" id="organizer-options">
             <summary>
-              <span class="organizer-icon" aria-hidden="true">⚙</span>
+              <span class="organizer-icon" aria-hidden="true">⚙️</span>
               <span class="organizer-text">
                 <strong data-i18n="draw.organizerOptions">Opciones del organizador</strong>
                 <span class="hint" data-i18n="draw.organizerHint"></span>
@@ -223,16 +223,16 @@
               <span class="chevron" aria-hidden="true"></span>
             </summary>
             <div class="toolbar">
-              <button type="button" id="reveal-all" class="btn" data-i18n="draw.revealAll">Revelar todos los resultados</button>
-              <button type="button" id="redo-draw" class="btn" data-i18n="draw.redo">Repetir sorteo</button>
-              <button type="button" id="discard-draw" class="btn btn-ghost-danger" data-i18n="draw.discard">Borrar sorteo</button>
+              <button type="button" id="reveal-all" class="btn"><span class="icon" aria-hidden="true">👀</span> <span data-i18n="draw.revealAll">Revelar todos los resultados</span></button>
+              <button type="button" id="redo-draw" class="btn"><span class="icon" aria-hidden="true">🔄</span> <span data-i18n="draw.redo">Repetir sorteo</span></button>
+              <button type="button" id="discard-draw" class="btn btn-ghost-danger"><span class="icon" aria-hidden="true">🗑️</span> <span data-i18n="draw.discard">Borrar sorteo</span></button>
             </div>
           </details>
 
           <div id="all-results" class="subcard" hidden>
-            <h3 data-i18n="draw.allResults">Todos los resultados</h3>
+            <h3><span class="icon" aria-hidden="true">📜</span> <span data-i18n="draw.allResults">Todos los resultados</span></h3>
             <ul id="all-results-list" class="results-list"></ul>
-            <button type="button" id="hide-all" class="btn" data-i18n="draw.hideAll">Ocultar resultados</button>
+            <button type="button" id="hide-all" class="btn"><span class="icon" aria-hidden="true">🙈</span> <span data-i18n="draw.hideAll">Ocultar resultados</span></button>
           </div>
         </div>
       </div>
@@ -252,7 +252,7 @@
         <span class="label" data-i18n="import.file">Archivo</span>
         <label class="btn file-btn">
           <input type="file" id="import-file" accept=".txt,.csv,.tsv,.json,text/plain,text/csv,application/json" class="visually-hidden">
-          <span data-i18n="import.chooseFile">Elegir archivo…</span>
+          <span class="icon" aria-hidden="true">📂</span> <span data-i18n="import.chooseFile">Elegir archivo…</span>
         </label>
         <span id="import-file-name" class="hint"></span>
       </div>
@@ -267,8 +267,8 @@
       </fieldset>
       <div id="import-preview" class="import-preview" aria-live="polite"></div>
       <div class="dialog-actions">
-        <button type="button" class="btn" id="import-cancel" data-i18n="common.cancel">Cancelar</button>
-        <button type="button" class="btn btn-primary" id="import-confirm" disabled>Importar</button>
+        <button type="button" class="btn" id="import-cancel"><span class="icon" aria-hidden="true">↩️</span> <span data-i18n="common.cancel">Cancelar</span></button>
+        <button type="button" class="btn btn-primary" id="import-confirm" disabled><span class="icon" aria-hidden="true">📥</span> <span id="import-confirm-label">Importar</span></button>
       </div>
     </form>
   </dialog>
@@ -282,7 +282,7 @@
         <input type="checkbox" id="confirm-check"> <span id="confirm-check-label"></span>
       </label>
       <div class="dialog-actions">
-        <button type="button" class="btn" id="confirm-cancel" data-i18n="common.cancel">Cancelar</button>
+        <button type="button" class="btn" id="confirm-cancel"><span class="icon" aria-hidden="true">↩️</span> <span data-i18n="common.cancel">Cancelar</span></button>
         <button type="button" class="btn btn-primary" id="confirm-ok"></button>
       </div>
     </form>
@@ -296,7 +296,7 @@
           <span id="inperson-progress-text" class="inperson-progress-text"></span>
           <span class="progress-track" aria-hidden="true"><span id="inperson-progress-bar" class="progress-bar"></span></span>
         </div>
-        <button type="button" id="inperson-exit" class="btn btn-ghost" data-i18n="inperson.exit">Salir</button>
+        <button type="button" id="inperson-exit" class="btn btn-ghost"><span class="icon" aria-hidden="true">🚪</span> <span data-i18n="inperson.exit">Salir</span></button>
       </div>
 
       <h2 id="inperson-heading" class="visually-hidden" data-i18n="draw.tabInPerson">Presencial</h2>
@@ -311,7 +311,7 @@
           <li data-i18n-html="inperson.introStep3"></li>
           <li data-i18n-html="inperson.introStep4"></li>
         </ol>
-        <button type="button" id="inperson-begin" class="btn btn-primary btn-large" data-i18n="inperson.begin">Empezar</button>
+        <button type="button" id="inperson-begin" class="btn btn-primary btn-large"><span class="icon" aria-hidden="true">▶️</span> <span data-i18n="inperson.begin">Empezar</span></button>
       </div>
 
       <!-- Step 1: hand the phone over, then hold to reveal -->
@@ -323,7 +323,7 @@
         <p id="inperson-instructions" class="stage-text"></p>
         <button type="button" id="inperson-reveal" class="btn btn-primary btn-large hold-btn">
           <span class="hold-fill" aria-hidden="true"></span>
-          <span class="hold-label" id="inperson-reveal-label"></span>
+          <span class="hold-label"><span class="icon" aria-hidden="true">👆</span> <span id="inperson-reveal-label"></span></span>
         </button>
         <p class="hint" data-i18n="inperson.holdHint">Mantén pulsado hasta que se llene la barra.</p>
       </div>
@@ -335,7 +335,7 @@
         <p id="inperson-result-label" class="eyebrow"></p>
         <p id="inperson-receiver" class="big-name reveal-pop"></p>
         <p id="inperson-memorize" class="stage-text"></p>
-        <button type="button" id="inperson-hide" class="btn btn-primary btn-large"></button>
+        <button type="button" id="inperson-hide" class="btn btn-primary btn-large"><span class="icon" aria-hidden="true">🙈</span> <span id="inperson-hide-label"></span></button>
       </div>
 
       <!-- Exit confirmation (inside the in-person view) -->
@@ -344,8 +344,8 @@
         <h3 class="stage-title" data-i18n="inperson.exitTitle">¿Salir del sorteo presencial?</h3>
         <p class="stage-text" data-i18n="inperson.exitMessage"></p>
         <div class="stage-actions">
-          <button type="button" id="inperson-exit-cancel" class="btn btn-primary btn-large" data-i18n="inperson.exitCancel">Seguir con el sorteo</button>
-          <button type="button" id="inperson-exit-ok" class="btn btn-large btn-ghost-danger" data-i18n="inperson.exit">Salir</button>
+          <button type="button" id="inperson-exit-cancel" class="btn btn-primary btn-large"><span class="icon" aria-hidden="true">▶️</span> <span data-i18n="inperson.exitCancel">Seguir con el sorteo</span></button>
+          <button type="button" id="inperson-exit-ok" class="btn btn-large btn-ghost-danger"><span class="icon" aria-hidden="true">🚪</span> <span data-i18n="inperson.exit">Salir</span></button>
         </div>
       </div>
 
@@ -353,7 +353,7 @@
       <div id="inperson-done" class="inperson-stage">
         <p class="stage-icon" aria-hidden="true">🎁</p>
         <h3 class="stage-title" data-i18n="inperson.doneTitle">¡Todos tienen su amigo invisible!</h3>
-        <button type="button" id="inperson-close" class="btn btn-primary btn-large" data-i18n="inperson.finish">Terminar</button>
+        <button type="button" id="inperson-close" class="btn btn-primary btn-large"><span class="icon" aria-hidden="true">✅</span> <span data-i18n="inperson.finish">Terminar</span></button>
       </div>
     </div>
   </dialog>

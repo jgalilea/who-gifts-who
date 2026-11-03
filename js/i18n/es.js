@@ -192,7 +192,6 @@ export default {
   'inperson.doneTitle': '¡Todos tienen su amigo invisible!',
   'inperson.finish': 'Terminar',
 
-  'reveal.loading': 'Abriendo tu enlace…',
   'reveal.errorTitle': 'Enlace no válido',
   'reveal.errorText': 'Este enlace está incompleto o dañado. Pide a quien organiza el sorteo que te lo vuelva a enviar.',
   'reveal.hello': 'Hola,',

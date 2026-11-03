@@ -21,7 +21,7 @@ export function createImportView({ store }) {
       preview = null;
       setChildren(previewEl);
       confirmBtn.disabled = true;
-      confirmBtn.textContent = t('import.confirm', { count: 0 });
+      $('#import-confirm-label').textContent = t('import.confirm', { count: 0 });
       return;
     }
     preview = previewImport(parseImport(text, filename), store.getState().participants, mode());
@@ -39,7 +39,7 @@ export function createImportView({ store }) {
   }
 
   function renderPreview() {
-    confirmBtn.textContent = t('import.confirm', { count: preview.summary.ok });
+    $('#import-confirm-label').textContent = t('import.confirm', { count: preview.summary.ok });
     if (preview.fatal) {
       confirmBtn.disabled = true;
       setChildren(previewEl, h('p', { class: 'status status-error' }, t(`import.${preview.fatal.code}`, preview.fatal.params)));

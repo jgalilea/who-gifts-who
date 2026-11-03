@@ -1,5 +1,5 @@
 // Section 1: add, edit, remove participants; export; clear.
-import { $, h, setChildren } from './dom.js';
+import { $, h, icon, setChildren } from './dom.js';
 import { t } from '../i18n/index.js';
 import { listGroups } from '../core/participants.js';
 import { exportConfig } from '../core/config.js';
@@ -68,7 +68,7 @@ export function createParticipantsView({ store, openImport }) {
             render(store.getState());
             $(`#edit-name-${p.id}`)?.focus();
           },
-        }, '✎'),
+        }, icon('✏️')),
         h('button', {
           type: 'button',
           class: 'btn btn-icon btn-ghost-danger',
@@ -78,7 +78,7 @@ export function createParticipantsView({ store, openImport }) {
             actions.removeParticipant(p.id);
             toast(t('participants.removed', { name: p.name }));
           },
-        }, '✕'),
+        }, icon('🗑️')),
       ),
     );
   }
@@ -115,7 +115,7 @@ export function createParticipantsView({ store, openImport }) {
         },
         h('div', { class: 'field' }, h('label', { for: nameId }, t('participants.name')), nameField),
         h('div', { class: 'field' }, h('label', { for: groupId }, t('participants.group')), groupField),
-        h('div', { class: 'row-actions' }, h('button', { type: 'submit', class: 'btn btn-primary' }, t('common.save')), h('button', { type: 'button', class: 'btn', onclick: cancel }, t('common.cancel'))),
+        h('div', { class: 'row-actions' }, h('button', { type: 'submit', class: 'btn btn-primary' }, icon('💾'), t('common.save')), h('button', { type: 'button', class: 'btn', onclick: cancel }, icon('↩️'), t('common.cancel'))),
         error,
       ),
     );

@@ -28,7 +28,7 @@ async function init() {
     payload = await decryptPayload(token);
     if (typeof payload?.g !== 'string' || typeof payload?.r !== 'string') throw new Error('INVALID_TOKEN');
   } catch {
-    $('#reveal-loading').hidden = true;
+    $('#reveal-ready').hidden = true;
     $('#reveal-error').hidden = false;
     return;
   }
@@ -40,10 +40,8 @@ async function init() {
   }
 
   $('#giver-name').textContent = payload.g;
-  $('#reveal-loading').hidden = true;
-  $('#reveal-ready').hidden = false;
-
   const button = $('#reveal-btn');
+  button.disabled = false;
   button.addEventListener('click', () => {
     button.disabled = true;
     const gift = $('#gift');
@@ -51,11 +49,11 @@ async function init() {
     setTimeout(
       () => {
         gift.classList.add('opened');
-        button.hidden = true;
-        $('#reveal-intro').hidden = true;
         $('#receiver-name').textContent = payload.r;
-        $('#reveal-result').hidden = false;
-        $('#receiver-name').focus?.();
+        $('#reveal-before').classList.add('is-hidden');
+        $('#reveal-before').setAttribute('aria-hidden', 'true');
+        $('#reveal-result').classList.remove('is-hidden');
+        $('#receiver-name').focus();
       },
       reducedMotion() ? 0 : 1500,
     );

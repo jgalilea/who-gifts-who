@@ -25,18 +25,14 @@
   </header>
 
   <main id="main" class="container reveal-main">
-    <div id="reveal-loading" class="card reveal-card">
-      <p data-i18n="reveal.loading">Abriendo tu enlace…</p>
-    </div>
-
     <div id="reveal-error" class="card reveal-card" hidden>
+      <p class="stage-icon" aria-hidden="true">🔒</p>
       <h1 data-i18n="reveal.errorTitle">Enlace no válido</h1>
-      <p data-i18n="reveal.errorText"></p>
+      <p data-i18n="reveal.errorText">Este enlace está incompleto o dañado. Pide a quien organiza el sorteo que te lo vuelva a enviar.</p>
     </div>
 
-    <div id="reveal-ready" class="card reveal-card" hidden>
-      <h1 class="hello"><span data-i18n="reveal.hello">Hola,</span> <span id="giver-name"></span></h1>
-      <p id="reveal-intro" data-i18n="reveal.intro"></p>
+    <div id="reveal-ready" class="card reveal-card">
+      <h1 class="hello"><span data-i18n="reveal.hello">Hola,</span> <span id="giver-name" class="giver-name">…</span></h1>
 
       <svg class="gift" id="gift" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
         <defs>
@@ -72,12 +68,17 @@
         </g>
       </svg>
 
-      <button type="button" id="reveal-btn" class="btn btn-primary btn-large" data-i18n="reveal.button">Descubrir a quién le regalo</button>
-
-      <div id="reveal-result" class="reveal-result" hidden>
-        <p class="eyebrow" data-i18n="reveal.youGift">Le regalas a…</p>
-        <p id="receiver-name" class="big-name reveal-pop" tabindex="-1"></p>
-        <p class="hint" data-i18n="reveal.keepSecret"></p>
+      <!-- Both layers share one grid cell, so swapping them never changes the card's height. -->
+      <div class="reveal-stage">
+        <div id="reveal-before" class="reveal-layer">
+          <p id="reveal-intro" data-i18n="reveal.intro">Tu amigo invisible te espera dentro de este regalo.</p>
+          <button type="button" id="reveal-btn" class="btn btn-primary btn-large" disabled><span class="icon" aria-hidden="true">🎁</span> <span data-i18n="reveal.button">Descubrir a quién le regalo</span></button>
+        </div>
+        <div id="reveal-result" class="reveal-layer is-hidden" aria-live="polite">
+          <p class="eyebrow" data-i18n="reveal.youGift">Le regalas a…</p>
+          <p id="receiver-name" class="big-name" tabindex="-1"></p>
+          <p class="hint" data-i18n="reveal.keepSecret">¡Shhh! Guarda el secreto 🤫</p>
+        </div>
       </div>
     </div>
   </main>

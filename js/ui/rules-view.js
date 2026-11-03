@@ -1,5 +1,5 @@
 // Section 2: family toggle, individual exclusions, active rules and feasibility status.
-import { $, h, setChildren, fillSelect } from './dom.js';
+import { $, h, icon, setChildren, fillSelect } from './dom.js';
 import { t, formatList } from '../i18n/index.js';
 import { groupMembers } from '../core/participants.js';
 
@@ -31,7 +31,7 @@ export function createRulesView({ store }) {
       { class: 'rule' },
       h('span', {}, text),
       onRemove
-        ? h('button', { type: 'button', class: 'btn btn-icon btn-ghost-danger', 'aria-label': removeLabel, title: t('common.remove'), onclick: onRemove }, '✕')
+        ? h('button', { type: 'button', class: 'btn btn-icon btn-ghost-danger', 'aria-label': removeLabel, title: t('common.remove'), onclick: onRemove }, icon('🗑️'))
         : h('span', { class: 'chip chip-muted' }, t('rules.always')),
     );
   }

@@ -192,7 +192,6 @@ export default {
   'inperson.doneTitle': 'Everyone has their Secret Santa!',
   'inperson.finish': 'Finish',
 
-  'reveal.loading': 'Opening your link…',
   'reveal.errorTitle': 'Invalid link',
   'reveal.errorText': 'This link is incomplete or damaged. Ask the organizer to send it again.',
   'reveal.hello': 'Hi,',
