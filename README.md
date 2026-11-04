@@ -316,4 +316,4 @@ Brand logos (WhatsApp) come from [Simple Icons](https://simpleicons.org) v16.36.
 
 ## License
 
-[MIT](LICENSE) © 2026 Javier Galilea
+Copyright © 2026 Javier Galilea. Released under the [GNU General Public License v3.0](LICENSE) or later: you may use, study, share and modify it, and any distributed modified version must also be released under the GPL with its source code.

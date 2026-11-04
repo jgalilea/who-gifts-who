@@ -9,5 +9,5 @@
     "start": "python3 -m http.server 8000",
     "version:assets": "node scripts/update-version.mjs"
   },
-  "license": "MIT"
+  "license": "GPL-3.0-or-later"
 }
