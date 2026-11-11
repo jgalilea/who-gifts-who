@@ -153,8 +153,8 @@ export default {
   'share.copied': 'Enlace de {name} copiado',
   'share.copyError': 'No se pudo copiar el enlace',
   'share.shareError': 'No se pudo compartir el enlace',
-  'share.message': ({ name, url, event, code }) => `🎁 ¡Hola, ${name}! Ya tenemos el sorteo del amigo invisible${event ? ` «${event}»` : ''}${code ? ` (código #${code})` : ''}. Abre tu enlace secreto para descubrir a quién le regalas (no lo compartas con nadie): ${url}`,
-  'share.shareText': ({ name, event }) => `🎁 ¡Hola, ${name}! Abre tu enlace secreto para descubrir a quién le regalas en el amigo invisible${event ? ` «${event}»` : ''}.`,
+  'share.message': ({ name, url, event, code }) => `Hola, ${name}. Ya está hecho el sorteo del amigo invisible${event ? ` «${event}»` : ''}${code ? ` (código #${code})` : ''}. En este enlace ves a quién te toca regalar; es solo para ti:\n${url}`,
+  'share.shareText': ({ name, event }) => `Hola, ${name}. Este es tu enlace del amigo invisible${event ? ` «${event}»` : ''}: en él ves a quién te toca regalar. Es solo para ti.`,
 
   'inperson.exit': 'Salir',
   'inperson.exitTitle': '¿Salir del sorteo presencial?',

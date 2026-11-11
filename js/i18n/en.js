@@ -153,8 +153,8 @@ export default {
   'share.copied': '{name}’s link copied',
   'share.copyError': 'Could not copy the link',
   'share.shareError': 'Could not share the link',
-  'share.message': ({ name, url, event, code }) => `🎁 Hi ${name}! The Secret Santa draw${event ? ` “${event}”` : ''} is done${code ? ` (code #${code})` : ''}. Open your secret link to find out who you are gifting (don’t share it with anyone): ${url}`,
-  'share.shareText': ({ name, event }) => `🎁 Hi ${name}! Open your secret link to find out who you are gifting in the Secret Santa${event ? ` “${event}”` : ''}.`,
+  'share.message': ({ name, url, event, code }) => `Hi ${name}, the Secret Santa draw${event ? ` “${event}”` : ''} is done${code ? ` (code #${code})` : ''}. This link shows who you are giving a present to; it is just for you:\n${url}`,
+  'share.shareText': ({ name, event }) => `Hi ${name}, this is your Secret Santa link${event ? ` for “${event}”` : ''}: it shows who you are giving a present to. It is just for you.`,
 
   'inperson.exit': 'Exit',
   'inperson.exitTitle': 'Leave the in-person reveal?',
