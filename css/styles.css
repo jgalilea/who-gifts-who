@@ -1487,7 +1487,13 @@ input[type="checkbox"]:not(.switch) {
   visibility: hidden;
 }
 
-#reveal-result:not(.is-hidden) .big-name {
+.name-pop {
+  width: 100%;
+}
+
+/* The animation runs on the wrapper, not on the clipped name: iOS Safari sometimes leaves an
+   animated overflow:hidden element half painted (the name cut in half) until it repaints. */
+#reveal-result:not(.is-hidden) .name-pop {
   animation: pop 0.45s cubic-bezier(0.2, 1.4, 0.4, 1);
 }
 

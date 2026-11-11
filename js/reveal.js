@@ -92,7 +92,7 @@ async function init() {
         $('#reveal-before').classList.add('is-hidden');
         $('#reveal-before').setAttribute('aria-hidden', 'true');
         $('#reveal-result').classList.remove('is-hidden');
-        $('#receiver-name').focus();
+        $('#receiver-name').focus({ preventScroll: true });
       },
       reducedMotion() ? 0 : 1500,
     );
